@@ -1,0 +1,40 @@
+{{ define "header" }}
+<header>
+    <div>
+        <div>
+            <a href="/"><h1>Kafshe-e-Mardane-Varzeshi Online Judge</h1></a>
+        </div>
+        
+        <div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/problemset">Problemset</a></li>
+                    <li><a href="/submit">Submit</a></li>
+                    <li><a href="/submissions">Submissions</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div>
+            <nav>
+                <ul>
+                    <li><a href="/newproblem">New Problem</a></li>
+                    <li><a href="/addedproblems">Added Problems</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div>
+            {{ if . }}
+                <a href="/profile">{{ .Username }}</a>
+            {{ else }}
+                <div>
+                    <a href="/login">Login</a>
+                    <a href="/signup">Signup</a>
+                </div>
+            {{ end }}
+        </div>
+    </div>
+</header>
+{{ end }}
