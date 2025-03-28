@@ -1,0 +1,28 @@
+{{ define "title" }}Submissions{{ end }}
+
+{{ define "content" }}
+<table>
+    <thead>
+        <tr>
+            <th>Submission ID</th>
+            <th>When</th>
+            <th>Problem</th>
+            <th>Status</th>
+            <th>Time</th>
+            <th>Memory</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ range . }}
+            <tr>
+                <td>{{ .ID }}</td>
+                <td>{{ .When }}</td>
+                <td><a href="/problem/{{.Problem.ID}}">{{.Problem.Name}}</a></td>
+                <td>{{ .Status }}</td>
+                <td>{{ .Time }}</td>
+                <td>{{ .Memory }}</td>
+            </tr>
+        {{ end }}
+    </tbody>
+</table>
+{{ end }}
