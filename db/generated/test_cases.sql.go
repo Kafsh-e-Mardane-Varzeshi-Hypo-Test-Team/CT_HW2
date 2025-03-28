@@ -26,8 +26,8 @@ type CreateTestCaseParams struct {
 	Output    string      `db:"output" json:"output"`
 }
 
-func (q *Queries) CreateTestCase(ctx context.Context, db DBTX, arg CreateTestCaseParams) (TestCase, error) {
-	row := db.QueryRow(ctx, createTestCase, arg.ProblemID, arg.Input, arg.Output)
+func (q *Queries) CreateTestCase(ctx context.Context, arg CreateTestCaseParams) (TestCase, error) {
+	row := q.db.QueryRow(ctx, createTestCase, arg.ProblemID, arg.Input, arg.Output)
 	var i TestCase
 	err := row.Scan(
 		&i.ID,
@@ -43,8 +43,8 @@ DELETE FROM test_cases
 WHERE id = $1
 `
 
-func (q *Queries) DeleteTestCase(ctx context.Context, db DBTX, id int32) error {
-	_, err := db.Exec(ctx, deleteTestCase, id)
+func (q *Queries) DeleteTestCase(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, deleteTestCase, id)
 	return err
 }
 
@@ -53,8 +53,8 @@ SELECT id, problem_id, input, output FROM test_cases
 WHERE id = $1
 `
 
-func (q *Queries) GetTestCaseById(ctx context.Context, db DBTX, id int32) (TestCase, error) {
-	row := db.QueryRow(ctx, getTestCaseById, id)
+func (q *Queries) GetTestCaseById(ctx context.Context, id int32) (TestCase, error) {
+	row := q.db.QueryRow(ctx, getTestCaseById, id)
 	var i TestCase
 	err := row.Scan(
 		&i.ID,
@@ -71,8 +71,8 @@ WHERE problem_id = $1
 ORDER BY id
 `
 
-func (q *Queries) ListTestCases(ctx context.Context, db DBTX, problemID pgtype.Int4) ([]TestCase, error) {
-	rows, err := db.Query(ctx, listTestCases, problemID)
+func (q *Queries) ListTestCases(ctx context.Context, problemID pgtype.Int4) ([]TestCase, error) {
+	rows, err := q.db.Query(ctx, listTestCases, problemID)
 	if err != nil {
 		return nil, err
 	}
@@ -109,8 +109,8 @@ type UpdateTestCaseParams struct {
 	Output string `db:"output" json:"output"`
 }
 
-func (q *Queries) UpdateTestCase(ctx context.Context, db DBTX, arg UpdateTestCaseParams) (TestCase, error) {
-	row := db.QueryRow(ctx, updateTestCase, arg.ID, arg.Input, arg.Output)
+func (q *Queries) UpdateTestCase(ctx context.Context, arg UpdateTestCaseParams) (TestCase, error) {
+	row := q.db.QueryRow(ctx, updateTestCase, arg.ID, arg.Input, arg.Output)
 	var i TestCase
 	err := row.Scan(
 		&i.ID,

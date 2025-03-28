@@ -27,8 +27,8 @@ type CreateSubmissionParams struct {
 	Column4    SubmissionStatus `db:"column_4" json:"column_4"`
 }
 
-func (q *Queries) CreateSubmission(ctx context.Context, db DBTX, arg CreateSubmissionParams) (Submission, error) {
-	row := db.QueryRow(ctx, createSubmission,
+func (q *Queries) CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (Submission, error) {
+	row := q.db.QueryRow(ctx, createSubmission,
 		arg.UserID,
 		arg.ProblemID,
 		arg.SourceCode,
@@ -53,8 +53,8 @@ SELECT id, user_id, problem_id, source_code, status, execution_time_ms, memory_u
 WHERE id = $1
 `
 
-func (q *Queries) GetSubmissionById(ctx context.Context, db DBTX, id int32) (Submission, error) {
-	row := db.QueryRow(ctx, getSubmissionById, id)
+func (q *Queries) GetSubmissionById(ctx context.Context, id int32) (Submission, error) {
+	row := q.db.QueryRow(ctx, getSubmissionById, id)
 	var i Submission
 	err := row.Scan(
 		&i.ID,
@@ -75,8 +75,8 @@ WHERE problem_id = $1
 ORDER BY submitted_at DESC
 `
 
-func (q *Queries) ListProblemSubmissions(ctx context.Context, db DBTX, problemID pgtype.Int4) ([]Submission, error) {
-	rows, err := db.Query(ctx, listProblemSubmissions, problemID)
+func (q *Queries) ListProblemSubmissions(ctx context.Context, problemID pgtype.Int4) ([]Submission, error) {
+	rows, err := q.db.Query(ctx, listProblemSubmissions, problemID)
 	if err != nil {
 		return nil, err
 	}
@@ -110,8 +110,8 @@ WHERE user_id = $1
 ORDER BY submitted_at DESC
 `
 
-func (q *Queries) ListUserSubmissions(ctx context.Context, db DBTX, userID pgtype.Int4) ([]Submission, error) {
-	rows, err := db.Query(ctx, listUserSubmissions, userID)
+func (q *Queries) ListUserSubmissions(ctx context.Context, userID pgtype.Int4) ([]Submission, error) {
+	rows, err := q.db.Query(ctx, listUserSubmissions, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -155,8 +155,8 @@ type UpdateSubmissionStatusParams struct {
 	MemoryUsedMb    pgtype.Int4      `db:"memory_used_mb" json:"memory_used_mb"`
 }
 
-func (q *Queries) UpdateSubmissionStatus(ctx context.Context, db DBTX, arg UpdateSubmissionStatusParams) (Submission, error) {
-	row := db.QueryRow(ctx, updateSubmissionStatus,
+func (q *Queries) UpdateSubmissionStatus(ctx context.Context, arg UpdateSubmissionStatusParams) (Submission, error) {
+	row := q.db.QueryRow(ctx, updateSubmissionStatus,
 		arg.ID,
 		arg.Column2,
 		arg.ExecutionTimeMs,

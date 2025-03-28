@@ -11,28 +11,28 @@ import (
 )
 
 type Querier interface {
-	CreateProblem(ctx context.Context, db DBTX, arg CreateProblemParams) (Problem, error)
-	CreateSubmission(ctx context.Context, db DBTX, arg CreateSubmissionParams) (Submission, error)
-	CreateTestCase(ctx context.Context, db DBTX, arg CreateTestCaseParams) (TestCase, error)
-	CreateUser(ctx context.Context, db DBTX, arg CreateUserParams) (User, error)
-	DeleteProblem(ctx context.Context, db DBTX, id int32) error
-	DeleteTestCase(ctx context.Context, db DBTX, id int32) error
-	DeleteUser(ctx context.Context, db DBTX, id int32) error
-	GetProblemById(ctx context.Context, db DBTX, id int32) (Problem, error)
-	GetSubmissionById(ctx context.Context, db DBTX, id int32) (Submission, error)
-	GetTestCaseById(ctx context.Context, db DBTX, id int32) (TestCase, error)
-	GetUserById(ctx context.Context, db DBTX, id int32) (User, error)
-	GetUserByUsername(ctx context.Context, db DBTX, username string) (User, error)
-	ListProblemSubmissions(ctx context.Context, db DBTX, problemID pgtype.Int4) ([]Submission, error)
-	ListPublishedProblems(ctx context.Context, db DBTX) ([]Problem, error)
-	ListTestCases(ctx context.Context, db DBTX, problemID pgtype.Int4) ([]TestCase, error)
-	ListUserProblems(ctx context.Context, db DBTX, ownerID int32) ([]Problem, error)
-	ListUserSubmissions(ctx context.Context, db DBTX, userID pgtype.Int4) ([]Submission, error)
-	ListUsers(ctx context.Context, db DBTX) ([]User, error)
-	UpdateProblem(ctx context.Context, db DBTX, arg UpdateProblemParams) (Problem, error)
-	UpdateSubmissionStatus(ctx context.Context, db DBTX, arg UpdateSubmissionStatusParams) (Submission, error)
-	UpdateTestCase(ctx context.Context, db DBTX, arg UpdateTestCaseParams) (TestCase, error)
-	UpdateUser(ctx context.Context, db DBTX, arg UpdateUserParams) (User, error)
+	CreateProblem(ctx context.Context, arg CreateProblemParams) (Problem, error)
+	CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (Submission, error)
+	CreateTestCase(ctx context.Context, arg CreateTestCaseParams) (TestCase, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteProblem(ctx context.Context, id int32) error
+	DeleteTestCase(ctx context.Context, id int32) error
+	DeleteUser(ctx context.Context, id int32) error
+	GetProblemById(ctx context.Context, id int32) (Problem, error)
+	GetSubmissionById(ctx context.Context, id int32) (Submission, error)
+	GetTestCaseById(ctx context.Context, id int32) (TestCase, error)
+	GetUserById(ctx context.Context, id int32) (User, error)
+	GetUserByUsername(ctx context.Context, username string) (User, error)
+	ListProblemSubmissions(ctx context.Context, problemID pgtype.Int4) ([]Submission, error)
+	ListPublishedProblems(ctx context.Context) ([]Problem, error)
+	ListTestCases(ctx context.Context, problemID pgtype.Int4) ([]TestCase, error)
+	ListUserProblems(ctx context.Context, ownerID int32) ([]Problem, error)
+	ListUserSubmissions(ctx context.Context, userID pgtype.Int4) ([]Submission, error)
+	ListUsers(ctx context.Context) ([]User, error)
+	UpdateProblem(ctx context.Context, arg UpdateProblemParams) (Problem, error)
+	UpdateSubmissionStatus(ctx context.Context, arg UpdateSubmissionStatusParams) (Submission, error)
+	UpdateTestCase(ctx context.Context, arg UpdateTestCaseParams) (TestCase, error)
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)
