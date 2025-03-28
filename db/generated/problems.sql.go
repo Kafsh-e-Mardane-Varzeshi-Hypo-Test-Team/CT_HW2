@@ -32,8 +32,8 @@ type CreateProblemParams struct {
 	Column8       ProblemStatus `db:"column_8" json:"column_8"`
 }
 
-func (q *Queries) CreateProblem(ctx context.Context, db DBTX, arg CreateProblemParams) (Problem, error) {
-	row := db.QueryRow(ctx, createProblem,
+func (q *Queries) CreateProblem(ctx context.Context, arg CreateProblemParams) (Problem, error) {
+	row := q.db.QueryRow(ctx, createProblem,
 		arg.Title,
 		arg.Statement,
 		arg.TimeLimitMs,
@@ -65,8 +65,8 @@ DELETE FROM problems
 WHERE id = $1
 `
 
-func (q *Queries) DeleteProblem(ctx context.Context, db DBTX, id int32) error {
-	_, err := db.Exec(ctx, deleteProblem, id)
+func (q *Queries) DeleteProblem(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, deleteProblem, id)
 	return err
 }
 
@@ -75,8 +75,8 @@ SELECT id, title, statement, time_limit_ms, memory_limit_mb, sample_input, sampl
 WHERE id = $1
 `
 
-func (q *Queries) GetProblemById(ctx context.Context, db DBTX, id int32) (Problem, error) {
-	row := db.QueryRow(ctx, getProblemById, id)
+func (q *Queries) GetProblemById(ctx context.Context, id int32) (Problem, error) {
+	row := q.db.QueryRow(ctx, getProblemById, id)
 	var i Problem
 	err := row.Scan(
 		&i.ID,
@@ -100,8 +100,8 @@ WHERE status = 'published'
 ORDER BY id
 `
 
-func (q *Queries) ListPublishedProblems(ctx context.Context, db DBTX) ([]Problem, error) {
-	rows, err := db.Query(ctx, listPublishedProblems)
+func (q *Queries) ListPublishedProblems(ctx context.Context) ([]Problem, error) {
+	rows, err := q.db.Query(ctx, listPublishedProblems)
 	if err != nil {
 		return nil, err
 	}
@@ -138,8 +138,8 @@ WHERE owner_id = $1
 ORDER BY id
 `
 
-func (q *Queries) ListUserProblems(ctx context.Context, db DBTX, ownerID int32) ([]Problem, error) {
-	rows, err := db.Query(ctx, listUserProblems, ownerID)
+func (q *Queries) ListUserProblems(ctx context.Context, ownerID int32) ([]Problem, error) {
+	rows, err := q.db.Query(ctx, listUserProblems, ownerID)
 	if err != nil {
 		return nil, err
 	}
@@ -194,8 +194,8 @@ type UpdateProblemParams struct {
 	Column8       ProblemStatus `db:"column_8" json:"column_8"`
 }
 
-func (q *Queries) UpdateProblem(ctx context.Context, db DBTX, arg UpdateProblemParams) (Problem, error) {
-	row := db.QueryRow(ctx, updateProblem,
+func (q *Queries) UpdateProblem(ctx context.Context, arg UpdateProblemParams) (Problem, error) {
+	row := q.db.QueryRow(ctx, updateProblem,
 		arg.ID,
 		arg.Title,
 		arg.Statement,

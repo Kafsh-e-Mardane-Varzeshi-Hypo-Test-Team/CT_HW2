@@ -24,8 +24,8 @@ type CreateUserParams struct {
 	Column3           UserRole `db:"column_3" json:"column_3"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, db DBTX, arg CreateUserParams) (User, error) {
-	row := db.QueryRow(ctx, createUser, arg.Username, arg.EncryptedPassword, arg.Column3)
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser, arg.Username, arg.EncryptedPassword, arg.Column3)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -42,8 +42,8 @@ DELETE FROM users
 WHERE id = $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, db DBTX, id int32) error {
-	_, err := db.Exec(ctx, deleteUser, id)
+func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, deleteUser, id)
 	return err
 }
 
@@ -52,8 +52,8 @@ SELECT id, username, encrypted_password, role, created_at FROM users
 WHERE id = $1
 `
 
-func (q *Queries) GetUserById(ctx context.Context, db DBTX, id int32) (User, error) {
-	row := db.QueryRow(ctx, getUserById, id)
+func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
+	row := q.db.QueryRow(ctx, getUserById, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -70,8 +70,8 @@ SELECT id, username, encrypted_password, role, created_at FROM users
 WHERE username = $1
 `
 
-func (q *Queries) GetUserByUsername(ctx context.Context, db DBTX, username string) (User, error) {
-	row := db.QueryRow(ctx, getUserByUsername, username)
+func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByUsername, username)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -88,8 +88,8 @@ SELECT id, username, encrypted_password, role, created_at FROM users
 ORDER BY id
 `
 
-func (q *Queries) ListUsers(ctx context.Context, db DBTX) ([]User, error) {
-	rows, err := db.Query(ctx, listUsers)
+func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
+	rows, err := q.db.Query(ctx, listUsers)
 	if err != nil {
 		return nil, err
 	}
@@ -128,8 +128,8 @@ type UpdateUserParams struct {
 	Column4           UserRole `db:"column_4" json:"column_4"`
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, db DBTX, arg UpdateUserParams) (User, error) {
-	row := db.QueryRow(ctx, updateUser,
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUser,
 		arg.ID,
 		arg.Username,
 		arg.EncryptedPassword,
