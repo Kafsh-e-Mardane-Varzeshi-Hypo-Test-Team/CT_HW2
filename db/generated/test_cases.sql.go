@@ -3,7 +3,7 @@
 //   sqlc v1.28.0
 // source: test_cases.sql
 
-package db
+package generated
 
 import (
 	"context"

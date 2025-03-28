@@ -3,7 +3,7 @@
 //   sqlc v1.28.0
 // source: problems.sql
 
-package db
+package generated
 
 import (
 	"context"

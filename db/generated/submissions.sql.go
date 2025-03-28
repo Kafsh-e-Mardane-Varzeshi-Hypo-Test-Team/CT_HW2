@@ -3,7 +3,7 @@
 //   sqlc v1.28.0
 // source: submissions.sql
 
-package db
+package generated
 
 import (
 	"context"
