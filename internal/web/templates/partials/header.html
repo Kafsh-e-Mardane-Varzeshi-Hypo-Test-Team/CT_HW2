@@ -1,37 +1,38 @@
 {{ define "header" }}
-<header>
-    <div>
-        <div>
-            <a href="/"><h1>Kafshe-e-Mardane-Varzeshi Online Judge</h1></a>
+<header class="site-header">
+    <div class="header-container">
+        <div class="branding">
+            <a href="/" class="logo-link">
+                <h1 class="site-title">KeMV Online Judge</h1>
+            </a>
         </div>
         
-        <div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/problemset">Problemset</a></li>
-                    <li><a href="/submit">Submit</a></li>
-                    <li><a href="/submissions">Submissions</a></li>
-                </ul>
-            </nav>
-        </div>
+        <nav class="main-navigation">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="/problemset" class="nav-link">Problemset</a></li>
+                <li class="nav-item"><a href="/submit" class="nav-link">Submit</a></li>
+                <li class="nav-item"><a href="/submissions" class="nav-link">Submissions</a></li>
+            </ul>
+        </nav>
 
-        <div>
-            <nav>
-                <ul>
-                    <li><a href="/newproblem">New Problem</a></li>
-                    <li><a href="/addedproblems">Added Problems</a></li>
-                </ul>
-            </nav>
-        </div>
+        <nav class="admin-navigation">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="/newproblem" class="nav-link">New Problem</a></li>
+                <li class="nav-item"><a href="/addedproblems" class="nav-link">Added Problems</a></li>
+            </ul>
+        </nav>
 
-        <div>
+        <div class="user-section">
             {{ if . }}
-                <a href="/profile">{{ .Username }}</a>
+                <a href="/profile" class="user-profile">
+                    <span class="username">{{ .Username }}</span>
+                </a>
+                <!-- Suggested: Add logout button -->
             {{ else }}
-                <div>
-                    <a href="/login">Login</a>
-                    <a href="/signup">Signup</a>
+                <div class="auth-buttons">
+                    <a href="/login" class="btn btn-login">Login</a>
+                    <a href="/signup" class="btn btn-signup">Signup</a>
                 </div>
             {{ end }}
         </div>
