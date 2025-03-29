@@ -1,34 +1,50 @@
-{{ define "title" }}Problemset{{ end }}
+{{ define "title" }}Problem Set - KMV Online Judge{{ end }}
 
 {{ define "content" }}
-<table>
-    <thead>
-        <tr>
-            <th>Problem ID</th>
-            <th>Name</th>
-            <th>Submit</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{ range .Problem }}
-            <tr>
-                <td><a href="/problem/{{.ID}}">{{.ID}}</td>
-                <td><a href="/problem/{{.ID}}">{{.Name}}</a></td>
-                <td><a href="/submit/{{.ID}}">Submit</a></td>
-            </tr>
+<div class="problemset-container">
+    <div class="problemset-header">
+        <h1>Problem Set</h1>
+    </div>
+
+    <div class="problemset-table-container">
+        <table class="problemset-table">
+            <thead>
+                <tr>
+                    <th class="col-id">ID</th>
+                    <th class="col-name">Problem</th>
+                    <th class="col-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .Problems }}
+                    <tr>
+                        <td>{{.ID}}</td>
+                        <td>
+                            <a href="/problem/{{.ID}}" class="problem-link">{{.Name}}</a>
+                        </td>
+                        <td>
+                            <a href="/submit/{{.ID}}" class="btn btn-small">Submit</a>
+                        </td>
+                    </tr>
+                {{ else }}
+                    <tr>
+                        <td colspan="5" class="no-problems">No problems found</td>
+                    </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {{ if gt .CurrentPage 1 }}
+            <a href="/problemset?page={{ sub .CurrentPage 1 }}" class="pagination-link">Previous</a>
         {{ end }}
-    </tbody>
-</table>
 
-<div>
-    {{ if gt .CurrentPage 1 }}
-        <a href="/problemset?page={{ sub .CurrentPage 1 }}"> Prev </a>
-    {{ end }}
+        <span class="pagination-current">{{.CurrentPage}}</span>
 
-    <span>{{.CurrentPage}}</span>
-
-    {{ if lt .CurrentPage .TotalPages }}
-        <a href="/problemset?page={{ add .CurrentPage 1 }}"> Next </a>
-    {{ end }}
+        {{ if lt .CurrentPage .TotalPages }}
+            <a href="/problemset?page={{ add .CurrentPage 1 }}" class="pagination-link">Next</a>
+        {{ end }}
+    </div>
 </div>
 {{ end }}

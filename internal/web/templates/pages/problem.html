@@ -1,30 +1,45 @@
-{{ define "template" }}Problem {{ .ID }}-{{ .Title }}{{ end }}
+{{ define "title" }}Problem {{.ID}} - {{.Title}} | KMV Online Judge{{ end }}
 
-{{ define "content" }} 
-<div>
-    <h1>{{ .ID }}-{{ .Title }}</h1>
-    <ul>
-        <li>Time Limit: {{ .TimeLimit }}</li>
-        <li>Memory Limit: {{ .MemoryLimit }}</li>
-    </ul>
+{{ define "content" }}
+<div class="problem-container">
+    <div class="problem-header">
+        <h1>{{.ID}}. {{.Title}}</h1>
+        <div class="problem-meta">
+            <span class="time-limit">Time Limit: {{.TimeLimit}}s</span>
+            <span class="memory-limit">Memory Limit: {{.MemoryLimit}}MB</span>
+        </div>
+        <div class="problem-actions">
+            <a href="/submit/{{.ID}}" class="btn btn-primary">Submit Solution</a>
+            {{ if .IsAuthor }}
+                <a href="/editproblem/{{.ID}}" class="btn btn-secondary">Edit Problem</a>
+            {{ end }}
+        </div>
+    </div>
+
+    <div class="problem-content">
+        <section class="problem-statement">
+            <h2>Problem Statement</h2>
+            <div class="markdown-content">
+                {{.Statement | markdown}}
+            </div>
+        </section>
+
+        <div class="sample-container">
+            <div class="sample-box">
+                <h3>Sample Input</h3>
+                <pre><code>{{.SampleInput}}</code></pre>
+            </div>
+            <div class="sample-box">
+                <h3>Sample Output</h3>
+                <pre><code>{{.SampleOutput}}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="problem-footer">
+        <div class="problem-stats">
+            <span>Author: <a href="/profile/{{.Username}}">{{.Username}}</a></span>
+        </div>
+    </div>
 </div>
-
-
-{{ .Statement }}
-
-
-<h2>Sample input:</h2>
-<p>
-    {{ .SampleInput}}
-</p>
-
-<h2>Sample output:</h2>
-<p>
-    {{ .SampleOutput}}
-</p>
-
-<a href="/submit/{{ .ID }}">Submit solution</a>
-
-<p>Created by {{ .UserID }}.</p>
-
 {{ end }}
