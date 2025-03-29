@@ -1,0 +1,34 @@
+{{ define "title" }}Problemset{{ end }}
+
+{{ define "content" }}
+<table>
+    <thead>
+        <tr>
+            <th>Problem ID</th>
+            <th>Name</th>
+            <th>Submit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ range .Problem }}
+            <tr>
+                <td><a href="/problem/{{.ID}}">{{.ID}}</td>
+                <td><a href="/problem/{{.ID}}">{{.Name}}</a></td>
+                <td><a href="/submit/{{.ID}}">Submit</a></td>
+            </tr>
+        {{ end }}
+    </tbody>
+</table>
+
+<div>
+    {{ if gt .CurrentPage 1 }}
+        <a href="/problemset?page={{ sub .CurrentPage 1 }}"> Prev </a>
+    {{ end }}
+
+    <span>{{.CurrentPage}}</span>
+
+    {{ if lt .CurrentPage .TotalPages }}
+        <a href="/problemset?page={{ add .CurrentPage 1 }}"> Next </a>
+    {{ end }}
+</div>
+{{ end }}
