@@ -1,0 +1,41 @@
+{{ define "title" }}Submit Problem{{ end }}
+
+{{ define "content" }}
+<form id="submitform" action="/submit" method="post">
+    <div>
+        <label for="problem">Problem:</label>
+        <input type="text" id="problem" name="problem" value="{{ .ID }}" required>
+    </div>
+
+    <div>
+        <label for="code">Source code:</label>
+        <textarea id="code" name="code"></textarea>
+    </div>
+
+    <div>
+        <label for="file">Or choose file:</label>
+        <input type="file" id="file" name="file" accept=".go">
+    </div>
+
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+
+<script>
+document.getElementById('submitform').addEventListener('submit', function(event) {
+    const code = document.getElementById('code').value.trim();
+    const file = document.getElementById('file').value.trim();
+    const errorElement = document.getElementById('validationError');
+    
+    // Check if exactly one field is filled
+    if ((code === '' && file === '') || (code !== '' && file !== '')) {
+        event.preventDefault(); // Stop form submission
+        errorElement.style.display = 'block';
+    } else {
+        errorElement.style.display = 'none';
+    }
+});
+</script>
+
+{{ end }}
