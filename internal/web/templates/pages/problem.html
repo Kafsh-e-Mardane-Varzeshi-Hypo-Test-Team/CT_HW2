@@ -1,0 +1,30 @@
+{{ define "template" }}Problem {{ .ID }}-{{ .Title }}{{ end }}
+
+{{ define "content" }} 
+<div>
+    <h1>{{ .ID }}-{{ .Title }}</h1>
+    <ul>
+        <li>Time Limit: {{ .TimeLimit }}</li>
+        <li>Memory Limit: {{ .MemoryLimit }}</li>
+    </ul>
+</div>
+
+
+{{ .Statement }}
+
+
+<h2>Sample input:</h2>
+<p>
+    {{ .SampleInput}}
+</p>
+
+<h2>Sample output:</h2>
+<p>
+    {{ .SampleOutput}}
+</p>
+
+<a href="/submit/{{ .ID }}">Submit solution</a>
+
+<p>Created by {{ .UserID }}.</p>
+
+{{ end }}
