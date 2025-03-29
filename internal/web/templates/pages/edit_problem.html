@@ -1,0 +1,37 @@
+{{ define "title" }}Edit Problem{{ end }}
+
+{{ define "content" }}
+<form action="/editproblem" method="post">
+    <div>
+        <label for="title">ID:</label>
+        <input type="text" id="id" name="id" value="{{ .ID }}" disabled>
+    </div>
+    <div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="{{ .Title }}" required>
+    </div>
+    <div>
+        <label for="time">Time limit:</label>
+        <input type="number" id="time" name="time" value="{{ .Time }}" required>
+    </div>
+    <div>
+        <label for="memory">Memory limit:</label>
+        <input type="number" id="memory" name="memory" value="{{ .Memory }}" required>
+    </div>
+    <div>
+        <label for="statement">Statement:</label>
+        <textarea id="statement" name="statement" value="{{ .Statement }}" required></textarea>
+    </div>
+    <div>
+        <label for="sample-input">Sample input:</label>
+        <textarea id="sample-input" name="sample-input" value="{{ .SampleInput }}" required></textarea>
+    </div>
+    <div>
+        <label for="sample-output">Sample output:</label>
+        <textarea id="sample-output" name="sample-output" value="{{ .SampleOutput }}" required></textarea>
+    </div>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+{{ end }}
