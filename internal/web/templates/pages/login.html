@@ -1,26 +1,32 @@
-{{ define "title" }}Login{{ end }}
+{{ define "title" }}Login - KMV Online Judge{{ end }}
 
 {{ define "content" }}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-title">Log In</h1>
+            <p class="auth-subtitle">Access your KMV Online Judge account</p>
+        </div>
 
-<h1>Login</h1>
-<form action="/login" method="post">
-    <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-    </div>
+        <form action="/login" method="post" class="auth-form">
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-input" 
+                       required autocomplete="username" placeholder="Enter your username">
+            </div>
 
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-input" 
+                       required autocomplete="current-password" placeholder="Enter your password">
+            </div>
 
-    <div>
-        <button type="submit">Log In</button>
+            <button type="submit" class="btn btn-primary btn-block">Log In</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="/signup" class="text-link">Sign up</a></p>
+        </div>
     </div>
-</form>
-    
-<div>
-    <p>Don't have an account? <a href="/signup">Sign up</a></p>
 </div>
-
 {{ end }}
