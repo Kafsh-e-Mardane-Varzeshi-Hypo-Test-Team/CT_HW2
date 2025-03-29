@@ -1,0 +1,88 @@
+{{ define "title" }}
+    {{ if .User.IsAdmin }}
+        All Problems - KMV Online Judge
+    {{ else }}
+        My Problems - KMV Online Judge
+    {{ end }}
+{{ end }}
+
+{{ define "content" }}
+<div class="problems-container">
+    <div class="problems-header">
+        <h1>
+            {{ if .User.IsAdmin }}
+                All Problems
+            {{ else }}
+                My Problems
+            {{ end }}
+        </h1>
+        <a href="/newproblem" class="btn btn-primary">Create New Problem</a>
+    </div>
+
+    <div class="problems-table-container">
+        <table class="problems-table">
+            <thead>
+                <tr>
+                    <th class="col-id">ID</th>
+                    <th class="col-name">Problem</th>
+                    {{ if .User.IsAdmin }}
+                        <th class="col-owner">Owner</th>
+                    {{ end }}
+                    <th class="col-status">Status</th>
+                    <th class="col-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .Problems }}
+                <tr>
+                    <td>{{.ID}}</td>
+                    <td>
+                        <a href="/problem/{{.ID}}" class="problem-link">{{.Name}}</a>
+                    </td>
+                    {{ if $.User.IsAdmin }}
+                        <td><a href="/profile/{{.Owner}}" class="user-link">{{.Owner}}</a></td>
+                    {{ end }}
+                    <td>
+                        <span class="status-badge status-{{.Status}}">{{.Status}}</span>
+                    </td>
+                    <td class="actions-cell">
+                        <div class="actions-group">
+                            <a href="/editproblem/{{.ID}}" class="btn btn-small btn-edit">Edit</a>
+                            {{ if eq .Status "Published" }}
+                                <form action="/draft-problem" method="POST" class="inline-form">
+                                    <input type="hidden" name="problem_id" value="{{.ID}}">
+                                    <button type="submit" class="btn btn-small btn-warning">Draft</button>
+                                </form>
+                            {{ else }}
+                                <form action="/publish-problem" method="POST" class="inline-form">
+                                    <input type="hidden" name="problem_id" value="{{.ID}}">
+                                    <button type="submit" class="btn btn-small btn-success">Publish</button>
+                                </form>
+                            {{ end }}
+                        </div>
+                    </td>
+                </tr>
+                {{ else }}
+                <tr>
+                    <td colspan="{{ if .User.IsAdmin }}5{{ else }}4{{ end }}" class="no-problems">
+                        No problems found
+                    </td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {{ if gt .CurrentPage 1 }}
+            <a href="/addedproblems?page={{ sub .CurrentPage 1 }}" class="pagination-link">Previous</a>
+        {{ end }}
+
+        <span class="pagination-current">{{.CurrentPage}}</span>
+
+        {{ if lt .CurrentPage .TotalPages }}
+            <a href="/addedproblems?page={{ add .CurrentPage 1 }}" class="pagination-link">Next</a>
+        {{ end }}
+    </div>
+</div>
+{{ end }}
