@@ -1,4 +1,4 @@
-{{ define "title" }}Submit Solution - KMV Online Judge{{ end }}
+{{ define "title" }}Submit Solution - KeMV Online Judge{{ end }}
 
 {{ define "content" }}
 <div class="submit-container">
@@ -11,7 +11,7 @@
             <label for="id" class="form-label">Problem</label>
             <input type="text" id="id" name="id" class="form-input" required 
             placeholder="Enter problem id"
-            {{ if .Problem }} value="{{ .Problem.ID }}" disabled {{ end }}>
+            {{ if .ID }} value="{{ .ID }}" {{ end }}>
         </div>
 
         <div class="form-group">
@@ -54,7 +54,6 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Submit Solution</button>
-            <a href="{{if .Problem }} /problem/{{.Problem.ID}} {{ else }} /problemset {{ end }}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
 </div>
@@ -85,10 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!codeProvided && !fileProvided) {
             e.preventDefault();
             errorElement.textContent = 'Please provide either source code or upload a file.';
-            errorElement.style.display = 'block';
-        } else if (methodCode.checked && methodFile.checked) {
-            e.preventDefault();
-            errorElement.textContent = 'Please choose only one submission method.';
             errorElement.style.display = 'block';
         } else {
             errorElement.style.display = 'none';
