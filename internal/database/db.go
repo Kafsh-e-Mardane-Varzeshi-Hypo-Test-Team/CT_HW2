@@ -5,7 +5,7 @@ import (
 	"fmt"
 	
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/db/generated"
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/database/generated"
 )
 
 // NewDBPool creates a new connection pool to the PostgreSQL database
