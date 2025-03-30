@@ -1,17 +1,17 @@
-{{ define "title" }}Problem {{.ID}} - {{.Title}} | KMV Online Judge{{ end }}
+{{ define "title" }}{{ .Problem.ID }}. {{ .Problem.Title }} - KeMV Online Judge{{ end }}
 
 {{ define "content" }}
 <div class="problem-container">
     <div class="problem-header">
-        <h1>{{.ID}}. {{.Title}}</h1>
+        <h1>{{ .Problem.ID }}. {{ .Problem.Title }}</h1>
         <div class="problem-meta">
-            <span class="time-limit">Time Limit: {{.TimeLimit}}s</span>
-            <span class="memory-limit">Memory Limit: {{.MemoryLimit}}MB</span>
+            <span class="time-limit">Time Limit: {{ .Problem.TimeLimit }}ms</span>
+            <span class="memory-limit">Memory Limit: {{ .Problem.MemoryLimit }}MB</span>
         </div>
         <div class="problem-actions">
-            <a href="/submit/{{.ID}}" class="btn btn-primary">Submit Solution</a>
-            {{ if .IsAuthor }}
-                <a href="/editproblem/{{.ID}}" class="btn btn-secondary">Edit Problem</a>
+            <a href="/submit/{{ .Problem.ID }}" class="btn btn-primary">Submit Solution</a>
+            {{ if or .User.IsAdmin (eq .Problem.Owner .User.Username) }}
+                <a href="/editproblem/{{ .Problem.ID }}" class="btn btn-secondary">Edit Problem</a>
             {{ end }}
         </div>
     </div>
@@ -20,25 +20,15 @@
         <section class="problem-statement">
             <h2>Problem Statement</h2>
             <div class="markdown-content">
-                {{.Statement | markdown}}
+                {{ .Problem.Statement | markdown}}
             </div>
         </section>
 
-        <div class="sample-container">
-            <div class="sample-box">
-                <h3>Sample Input</h3>
-                <pre><code>{{.SampleInput}}</code></pre>
-            </div>
-            <div class="sample-box">
-                <h3>Sample Output</h3>
-                <pre><code>{{.SampleOutput}}</code></pre>
-            </div>
-        </div>
     </div>
 
     <div class="problem-footer">
         <div class="problem-stats">
-            <span>Author: <a href="/profile/{{.Username}}">{{.Username}}</a></span>
+            <span>Owner: <a href="/profile/{{ .Problem.Owner }}">{{ .Problem.Owner }}</a></span>
         </div>
     </div>
 </div>
