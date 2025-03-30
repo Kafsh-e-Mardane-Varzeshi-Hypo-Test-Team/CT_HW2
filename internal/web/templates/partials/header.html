@@ -19,13 +19,19 @@
         <nav class="admin-navigation">
             <ul class="nav-list">
                 <li class="nav-item"><a href="/newproblem" class="nav-link">New Problem</a></li>
-                <li class="nav-item"><a href="/addedproblems" class="nav-link">Added Problems</a></li>
+                <li class="nav-item"><a href="/addedproblems" class="nav-link">
+                    {{ if .User.IsAdmin }}
+                        All Problems
+                    {{ else }}
+                        My Problems
+                    {{ end }}
+                </a></li>
             </ul>
         </nav>
 
         <div class="user-section">
-            {{ if . }}
-                <a href="/profile" class="user-profile">
+            {{ with .User }}
+                <a href="/profile/{{ .Username }}" class="user-profile">
                     <span class="username">{{ .Username }}</span>
                 </a>
                 <!-- Suggested: Add logout button -->
