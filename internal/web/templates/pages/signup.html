@@ -5,7 +5,6 @@
     <div class="auth-card">
         <div class="auth-header">
             <h1 class="auth-title">Create Account</h1>
-            <p class="auth-subtitle">Join KMV Online Judge community</p>
         </div>
 
         <form action="/signup" method="post" class="auth-form" id="signup-form">
@@ -34,6 +33,12 @@
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+
+            {{ if .Error }}
+                <div class="alert alert-error">
+                    {{ .Error }}
+                </div>
+            {{ end }}
         </form>
         
         <div class="auth-footer">

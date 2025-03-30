@@ -5,7 +5,6 @@
     <div class="auth-card">
         <div class="auth-header">
             <h1 class="auth-title">Log In</h1>
-            <p class="auth-subtitle">Access your KMV Online Judge account</p>
         </div>
 
         <form action="/login" method="post" class="auth-form">
@@ -22,6 +21,12 @@
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">Log In</button>
+
+            {{ if .Error }}
+                <div class="alert alert-error">
+                    {{ .Error }}
+                </div>
+            {{ end }}
         </form>
         
         <div class="auth-footer">
