@@ -16,7 +16,8 @@ INSERT INTO problems (
   title, statement, time_limit_ms, memory_limit_mb, 
   sample_input, sample_output, owner_id, status
 ) VALUES (
-  $1, $2, $3, $4, $5, $6, $7, $8::problem_status
+  $1, $2, $3, $4, 
+  $5, $6, $7, $8::problem_status
 )
 RETURNING id, title, statement, time_limit_ms, memory_limit_mb, sample_input, sample_output, owner_id, status, created_at, modified_at
 `
@@ -29,7 +30,7 @@ type CreateProblemParams struct {
 	SampleInput   pgtype.Text   `db:"sample_input" json:"sample_input"`
 	SampleOutput  pgtype.Text   `db:"sample_output" json:"sample_output"`
 	OwnerID       int32         `db:"owner_id" json:"owner_id"`
-	Column8       ProblemStatus `db:"column_8" json:"column_8"`
+	Status        ProblemStatus `db:"status" json:"status"`
 }
 
 func (q *Queries) CreateProblem(ctx context.Context, arg CreateProblemParams) (Problem, error) {
@@ -41,7 +42,7 @@ func (q *Queries) CreateProblem(ctx context.Context, arg CreateProblemParams) (P
 		arg.SampleInput,
 		arg.SampleOutput,
 		arg.OwnerID,
-		arg.Column8,
+		arg.Status,
 	)
 	var i Problem
 	err := row.Scan(
@@ -172,38 +173,38 @@ func (q *Queries) ListUserProblems(ctx context.Context, ownerID int32) ([]Proble
 
 const updateProblem = `-- name: UpdateProblem :one
 UPDATE problems
-SET title = $2, 
-    statement = $3, 
-    time_limit_ms = $4, 
-    memory_limit_mb = $5, 
-    sample_input = $6, 
-    sample_output = $7, 
-    status = $8::problem_status
-WHERE id = $1
+SET title = $1, 
+    statement = $2, 
+    time_limit_ms = $3, 
+    memory_limit_mb = $4, 
+    sample_input = $5, 
+    sample_output = $6, 
+    status = $7::problem_status
+WHERE id = $8
 RETURNING id, title, statement, time_limit_ms, memory_limit_mb, sample_input, sample_output, owner_id, status, created_at, modified_at
 `
 
 type UpdateProblemParams struct {
-	ID            int32         `db:"id" json:"id"`
 	Title         string        `db:"title" json:"title"`
 	Statement     string        `db:"statement" json:"statement"`
 	TimeLimitMs   int32         `db:"time_limit_ms" json:"time_limit_ms"`
 	MemoryLimitMb int32         `db:"memory_limit_mb" json:"memory_limit_mb"`
 	SampleInput   pgtype.Text   `db:"sample_input" json:"sample_input"`
 	SampleOutput  pgtype.Text   `db:"sample_output" json:"sample_output"`
-	Column8       ProblemStatus `db:"column_8" json:"column_8"`
+	Status        ProblemStatus `db:"status" json:"status"`
+	ID            int32         `db:"id" json:"id"`
 }
 
 func (q *Queries) UpdateProblem(ctx context.Context, arg UpdateProblemParams) (Problem, error) {
 	row := q.db.QueryRow(ctx, updateProblem,
-		arg.ID,
 		arg.Title,
 		arg.Statement,
 		arg.TimeLimitMs,
 		arg.MemoryLimitMb,
 		arg.SampleInput,
 		arg.SampleOutput,
-		arg.Column8,
+		arg.Status,
+		arg.ID,
 	)
 	var i Problem
 	err := row.Scan(

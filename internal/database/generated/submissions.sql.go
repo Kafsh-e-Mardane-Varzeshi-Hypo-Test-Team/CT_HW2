@@ -24,7 +24,7 @@ type CreateSubmissionParams struct {
 	UserID     pgtype.Int4      `db:"user_id" json:"user_id"`
 	ProblemID  pgtype.Int4      `db:"problem_id" json:"problem_id"`
 	SourceCode string           `db:"source_code" json:"source_code"`
-	Column4    SubmissionStatus `db:"column_4" json:"column_4"`
+	Status     SubmissionStatus `db:"status" json:"status"`
 }
 
 func (q *Queries) CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (Submission, error) {
@@ -32,7 +32,7 @@ func (q *Queries) CreateSubmission(ctx context.Context, arg CreateSubmissionPara
 		arg.UserID,
 		arg.ProblemID,
 		arg.SourceCode,
-		arg.Column4,
+		arg.Status,
 	)
 	var i Submission
 	err := row.Scan(
@@ -139,28 +139,28 @@ func (q *Queries) ListUserSubmissions(ctx context.Context, userID pgtype.Int4) (
 	return items, nil
 }
 
-const updateSubmissionStatus = `-- name: UpdateSubmissionStatus :one
+const updateSubmissionStatusTimeMemory = `-- name: UpdateSubmissionStatusTimeMemory :one
 UPDATE submissions
-SET status = $2::submission_status, 
-    execution_time_ms = $3, 
-    memory_used_mb = $4
-WHERE id = $1
+SET status = $1::submission_status, 
+    execution_time_ms = $2, 
+    memory_used_mb = $3
+WHERE id = $4
 RETURNING id, user_id, problem_id, source_code, status, execution_time_ms, memory_used_mb, submitted_at
 `
 
-type UpdateSubmissionStatusParams struct {
-	ID              int32            `db:"id" json:"id"`
-	Column2         SubmissionStatus `db:"column_2" json:"column_2"`
+type UpdateSubmissionStatusTimeMemoryParams struct {
+	Status          SubmissionStatus `db:"status" json:"status"`
 	ExecutionTimeMs pgtype.Int4      `db:"execution_time_ms" json:"execution_time_ms"`
 	MemoryUsedMb    pgtype.Int4      `db:"memory_used_mb" json:"memory_used_mb"`
+	ID              int32            `db:"id" json:"id"`
 }
 
-func (q *Queries) UpdateSubmissionStatus(ctx context.Context, arg UpdateSubmissionStatusParams) (Submission, error) {
-	row := q.db.QueryRow(ctx, updateSubmissionStatus,
-		arg.ID,
-		arg.Column2,
+func (q *Queries) UpdateSubmissionStatusTimeMemory(ctx context.Context, arg UpdateSubmissionStatusTimeMemoryParams) (Submission, error) {
+	row := q.db.QueryRow(ctx, updateSubmissionStatusTimeMemory,
+		arg.Status,
 		arg.ExecutionTimeMs,
 		arg.MemoryUsedMb,
+		arg.ID,
 	)
 	var i Submission
 	err := row.Scan(

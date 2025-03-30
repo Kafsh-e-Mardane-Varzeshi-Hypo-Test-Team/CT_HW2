@@ -21,11 +21,11 @@ RETURNING id, username, encrypted_password, role, created_at
 type CreateUserParams struct {
 	Username          string   `db:"username" json:"username"`
 	EncryptedPassword string   `db:"encrypted_password" json:"encrypted_password"`
-	Column3           UserRole `db:"column_3" json:"column_3"`
+	Role              UserRole `db:"role" json:"role"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.Username, arg.EncryptedPassword, arg.Column3)
+	row := q.db.QueryRow(ctx, createUser, arg.Username, arg.EncryptedPassword, arg.Role)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -116,24 +116,26 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET username = $2, encrypted_password = $3, role = $4::user_role
-WHERE id = $1
+SET username = $1, 
+    encrypted_password = $2, 
+    role = $3::user_role
+WHERE id = $4
 RETURNING id, username, encrypted_password, role, created_at
 `
 
 type UpdateUserParams struct {
-	ID                int32    `db:"id" json:"id"`
 	Username          string   `db:"username" json:"username"`
 	EncryptedPassword string   `db:"encrypted_password" json:"encrypted_password"`
-	Column4           UserRole `db:"column_4" json:"column_4"`
+	Role              UserRole `db:"role" json:"role"`
+	ID                int32    `db:"id" json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUser,
-		arg.ID,
 		arg.Username,
 		arg.EncryptedPassword,
-		arg.Column4,
+		arg.Role,
+		arg.ID,
 	)
 	var i User
 	err := row.Scan(
