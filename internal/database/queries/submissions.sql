@@ -16,14 +16,14 @@ ORDER BY submitted_at DESC;
 INSERT INTO submissions (
   user_id, problem_id, source_code, status
 ) VALUES (
-  $1, $2, $3, $4::submission_status
+  @user_id, @problem_id, @source_code, @status::submission_status
 )
 RETURNING *;
 
--- name: UpdateSubmissionStatus :one
+-- name: UpdateSubmissionStatusTimeMemory :one
 UPDATE submissions
-SET status = $2::submission_status, 
-    execution_time_ms = $3, 
-    memory_used_mb = $4
-WHERE id = $1
+SET status = @status::submission_status, 
+    execution_time_ms = @execution_time_ms, 
+    memory_used_mb = @memory_used_mb
+WHERE id = @id
 RETURNING *;

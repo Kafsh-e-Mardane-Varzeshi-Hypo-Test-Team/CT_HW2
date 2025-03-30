@@ -30,7 +30,7 @@ type Querier interface {
 	ListUserSubmissions(ctx context.Context, userID pgtype.Int4) ([]Submission, error)
 	ListUsers(ctx context.Context) ([]User, error)
 	UpdateProblem(ctx context.Context, arg UpdateProblemParams) (Problem, error)
-	UpdateSubmissionStatus(ctx context.Context, arg UpdateSubmissionStatusParams) (Submission, error)
+	UpdateSubmissionStatusTimeMemory(ctx context.Context, arg UpdateSubmissionStatusTimeMemoryParams) (Submission, error)
 	UpdateTestCase(ctx context.Context, arg UpdateTestCaseParams) (TestCase, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }

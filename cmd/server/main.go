@@ -37,7 +37,7 @@ func main() {
 		ID:       1,
 		Username: "Arash Mohseni",
 		EncryptedPassword: "I'm GOOD",
-		Column4: "admin"})
+		Role: "admin"})
 
 	fmt.Println(queries.ListUsers(ctx))
 

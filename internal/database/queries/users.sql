@@ -14,14 +14,16 @@ ORDER BY id;
 INSERT INTO users (
   username, encrypted_password, role
 ) VALUES (
-  $1, $2, $3::user_role
+  @username, @encrypted_password, @role::user_role
 )
 RETURNING *;
 
 -- name: UpdateUser :one
 UPDATE users
-SET username = $2, encrypted_password = $3, role = $4::user_role
-WHERE id = $1
+SET username = @username, 
+    encrypted_password = @encrypted_password, 
+    role = @role::user_role
+WHERE id = @id
 RETURNING *;
 
 -- name: DeleteUser :exec
