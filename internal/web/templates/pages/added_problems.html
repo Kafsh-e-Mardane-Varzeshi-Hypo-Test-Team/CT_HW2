@@ -1,8 +1,8 @@
 {{ define "title" }}
     {{ if .User.IsAdmin }}
-        All Problems - KMV Online Judge
+        All Problems - KeMV Online Judge
     {{ else }}
-        My Problems - KMV Online Judge
+        My Problems - KeMV Online Judge
     {{ end }}
 {{ end }}
 
@@ -16,7 +16,6 @@
                 My Problems
             {{ end }}
         </h1>
-        <a href="/newproblem" class="btn btn-primary">Create New Problem</a>
     </div>
 
     <div class="problems-table-container">
@@ -37,7 +36,7 @@
                 <tr>
                     <td>{{.ID}}</td>
                     <td>
-                        <a href="/problem/{{.ID}}" class="problem-link">{{.Name}}</a>
+                        <a href="/problem/{{.ID}}" class="problem-link">{{.Title}}</a>
                     </td>
                     {{ if $.User.IsAdmin }}
                         <td><a href="/profile/{{.Owner}}" class="user-link">{{.Owner}}</a></td>
