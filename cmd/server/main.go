@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/db/generated"
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/database/generated"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/config"
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/db"
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/database"
 )
 
 func main() {
@@ -36,7 +36,7 @@ func main() {
 	queries.UpdateUser(ctx, generated.UpdateUserParams{
 		ID:       1,
 		Username: "Arash Mohseni",
-		EncryptedPassword: "I'm GOD",
+		EncryptedPassword: "I'm GOOD",
 		Column4: "admin"})
 
 	fmt.Println(queries.ListUsers(ctx))
