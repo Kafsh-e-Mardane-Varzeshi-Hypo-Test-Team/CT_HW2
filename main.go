@@ -1,0 +1,347 @@
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"html/template"
+	"net/http"
+	"path/filepath"
+	"strconv"
+	"strings"
+
+	"github.com/gin-contrib/multitemplate"
+	"github.com/gin-gonic/gin"
+	"github.com/yuin/goldmark"
+)
+
+var (
+	admin = gin.H{
+		"Username": "admin",
+		"IsAdmin":  true,
+	}
+	problems = []gin.H{
+		{
+			"ID":          1,
+			"Title":       "Problem1",
+			"Owner":       "admin",
+			"Status":      "Draft",
+			"TimeLimit":   1000,
+			"MemoryLimit": 256,
+			"Statement": `
+## Problem Statement
+
+Given an array of integers 'nums' and an integer 'target', return indices of the two numbers such that they add up to 'target'.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+## Input
+
+- The first line contains an integer n (2 ≤ n ≤ 10^4), the size of the array
+- The second line contains n space-separated integers representing the array elements (-10⁹ ≤ nums[i] ≤ 10⁹)
+- The third line contains the target integer (-10⁹ ≤ target ≤ 10⁹)
+
+## Output
+
+Print two space-separated integers representing the indices of the two numbers.
+
+## Constraints
+
+- Only one valid answer exists
+- You cannot use the same element twice
+
+## Example:
+
+**Input:**  
+
+4
+
+2 7 11 15
+
+9
+
+**Output:**  
+
+0 1
+`,
+		},
+		{
+			"ID":          2,
+			"Title":       "Problem2",
+			"Owner":       "admin",
+			"Status":      "Published",
+			"TimeLimit":   1000,
+			"MemoryLimit": 256,
+			"Statement":   "statement",
+		},
+		{
+			"ID":          3,
+			"Title":       "Problem3",
+			"Owner":       "admin",
+			"Status":      "Published",
+			"TimeLimit":   1000,
+			"MemoryLimit": 256,
+			"Statement":   "statement",
+		},
+		{
+			"ID":          4,
+			"Title":       "Problem4",
+			"Owner":       "admin",
+			"Status":      "Draft",
+			"TimeLimit":   1000,
+			"MemoryLimit": 256,
+			"Statement":   "statement",
+		},
+	}
+	submissions = []gin.H{
+		{
+			"ID":      22401,
+			"When":    "03-30-2025 20:30",
+			"Problem": problems[1],
+			"Status":  "Pending",
+			"Time":    121,
+			"Memory":  19,
+		},
+		{
+			"ID":      22349,
+			"When":    "03-29-2025 15:43",
+			"Problem": problems[0],
+			"Status":  "Accepted",
+			"Time":    234,
+			"Memory":  42,
+		},
+		{
+			"ID":      22320,
+			"When":    "03-29-2025 15:34",
+			"Problem": problems[0],
+			"Status":  "Wrong Answer",
+			"Time":    223,
+			"Memory":  42,
+		},
+		{
+			"ID":      22311,
+			"When":    "03-29-2025 15:32",
+			"Problem": problems[0],
+			"Status":  "Compile Error",
+			"Time":    0,
+			"Memory":  0,
+		},
+	}
+)
+
+func main() {
+	path := "internal/web/templates"
+
+	r := gin.Default()
+	r.Static("/static", "./static")
+	r.HTMLRender = loadTemplates(path)
+
+	r.Use(authMiddleware())
+
+	r.GET("/", indexPage)
+	r.GET("/login", loginPage)
+	r.POST("/login", loginHandler)
+	r.GET("/signup", signupPage)
+	// r.POST("/signup", signupHandler)
+	r.GET("/profile/:username", profilePage)
+	// r.POST("/demote-user")
+	// r.POST("/promote-user")
+	r.GET("/problemset", problemsetPage)
+	r.GET("/submit/:id", submitPage)
+	r.GET("/submit", submitPage)
+	// r.POST("/submit")
+	r.GET("/submissions", submissionsPage)
+	r.GET("/addedproblems", addedProblemsPage)
+	// r.POST("/draft-problem")
+	// r.POST("/publish-problem")
+	r.GET("/problem/:id", problemPage)
+	r.GET("/newproblem", newProblemPage)
+	// r.POST("/newproblem")
+	r.GET("/editproblem/:id", editProblemPage)
+	// r.POST("/editproblem")
+
+	r.Run(":8080")
+}
+
+func editProblemPage(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	c.HTML(http.StatusOK, "edit_problem.html", gin.H{
+		"Problem": problems[id-1],
+		"User":    admin,
+	})
+}
+
+func newProblemPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "new_problem.html", gin.H{
+		"User": admin,
+	})
+}
+
+func problemPage(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	c.HTML(http.StatusOK, "problem.html", gin.H{
+		"Problem": problems[id-1],
+		"User": gin.H{
+			"Username": "mammedbrk",
+			"IsAdmin":  false,
+		},
+	})
+}
+
+func addedProblemsPage(c *gin.Context) {
+	currentPage, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		c.Redirect(http.StatusFound, "/addedproblems?page=1")
+		return
+	}
+	c.HTML(http.StatusOK, "added_problems.html", gin.H{
+		"Problems":    problems,
+		"CurrentPage": currentPage,
+		"TotalPages":  3,
+		"User":        admin,
+	})
+}
+
+func submissionsPage(c *gin.Context) {
+	currentPage, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		c.Redirect(http.StatusFound, "/submissions?page=1")
+		return
+	}
+	c.HTML(http.StatusOK, "submissions.html", gin.H{
+		"Submissions": submissions,
+		"CurrentPage": currentPage,
+		"TotalPages":  3,
+	})
+}
+
+func submitPage(c *gin.Context) {
+	problemID := c.Param("id")
+	c.HTML(http.StatusOK, "submit.html", gin.H{
+		"ID": problemID,
+	})
+}
+
+func problemsetPage(c *gin.Context) {
+	currentPage, err := strconv.Atoi(c.Query("page"))
+	if err != nil {
+		c.Redirect(http.StatusFound, "/problemset?page=1")
+		return
+	}
+	c.HTML(http.StatusOK, "problemset.html", gin.H{
+		"Problems":    problems,
+		"CurrentPage": currentPage,
+		"TotalPages":  3,
+	})
+}
+
+func profilePage(c *gin.Context) {
+	profileUsername := c.Param("username")
+	c.HTML(http.StatusOK, "profile.html", gin.H{
+		"User": admin,
+		"Profile": gin.H{
+			"Username":              profileUsername,
+			"IsAdmin":               false,
+			"TotalSubmissions":      37,
+			"SuccessfulSubmissions": 24,
+			"Submissions":           submissions,
+		},
+	})
+}
+
+func signupPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "signup.html", nil)
+}
+
+func loginHandler(c *gin.Context) {
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+
+	if username != "admin" || password != "admin" {
+		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
+			"Error": "Invalid username or password",
+		})
+		return
+	}
+
+	c.SetCookie("session_token", username, 3220, "/", "", false, true)
+
+	c.Redirect(http.StatusFound, "/")
+}
+
+func loginPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "login.html", nil)
+}
+
+func indexPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.html", nil)
+}
+
+func authMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		username, err := c.Cookie("session_token")
+		if err == nil {
+			// If the cookie exists, pass the username to the template
+			c.Set("username", username)
+		}
+		c.Next()
+	}
+}
+
+func loadTemplates(templatesDir string) multitemplate.Renderer {
+	r := multitemplate.NewRenderer()
+
+	funcMap := template.FuncMap{
+		"sub": func(a, b int) int {
+			return a - b
+		},
+		"add": func(a, b int) int {
+			return a + b
+		},
+		"markdown": func(input string) template.HTML {
+			var buf bytes.Buffer
+			if err := goldmark.Convert([]byte(input), &buf); err != nil {
+				return template.HTML(input) // fallback to raw text if error
+			}
+			return template.HTML(buf.String())
+		},
+		"successRate": func(success, total int) string {
+			if total == 0 {
+				return "0"
+			}
+			return fmt.Sprintf("%.2f", float64(success)/float64(total)*100)
+		},
+		"status": func(status string) string {
+			status = strings.ToLower(status)
+			if status == "accepted" || status == "pending" || status == "compile error" {
+				return status
+			}
+			return "error"
+		},
+		"initial": func(input string) string {
+			return input[:1]
+		},
+	}
+
+	layouts, err := filepath.Glob(templatesDir + "/layouts/*.html")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	partials, err := filepath.Glob(templatesDir + "/partials/*.html")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	pages, err := filepath.Glob(templatesDir + "/pages/*.html")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// Generate our templates map from our layouts/ and includes/ directories
+	for _, page := range pages {
+		files := append(layouts, page)
+		files = append(files, partials...)
+		r.AddFromFilesFuncs(filepath.Base(page), funcMap, files...)
+	}
+	return r
+}
