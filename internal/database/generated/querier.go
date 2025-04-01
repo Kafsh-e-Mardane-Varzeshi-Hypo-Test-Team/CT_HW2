@@ -23,6 +23,8 @@ type Querier interface {
 	GetTestCaseById(ctx context.Context, id int32) (TestCase, error)
 	GetUserById(ctx context.Context, id int32) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
+	GetUserRankingById(ctx context.Context, limit int32) ([]GetUserRankingByIdRow, error)
+	GetUserStatsById(ctx context.Context, userID int32) (GetUserStatsByIdRow, error)
 	ListProblemSubmissions(ctx context.Context, problemID pgtype.Int4) ([]Submission, error)
 	ListPublishedProblems(ctx context.Context) ([]Problem, error)
 	ListTestCases(ctx context.Context, problemID pgtype.Int4) ([]TestCase, error)
@@ -33,6 +35,7 @@ type Querier interface {
 	UpdateSubmissionStatusTimeMemory(ctx context.Context, arg UpdateSubmissionStatusTimeMemoryParams) (Submission, error)
 	UpdateTestCase(ctx context.Context, arg UpdateTestCaseParams) (TestCase, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
+	UserHasSolvedProblem(ctx context.Context, arg UserHasSolvedProblemParams) (bool, error)
 }
 
 var _ Querier = (*Queries)(nil)
