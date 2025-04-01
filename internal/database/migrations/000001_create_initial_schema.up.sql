@@ -53,6 +53,59 @@ CREATE TABLE submissions (
 -- Add index on foreign key
 CREATE INDEX idx_submissions_user ON submissions(user_id);
 
+-- User_stats table
+CREATE TABLE user_stats (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    total_submissions INTEGER NOT NULL DEFAULT 0,
+    total_accepted INTEGER NOT NULL DEFAULT 0,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE OR REPLACE FUNCTION update_submission_stats() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Handle total_submissions
+    IF (TG_OP = 'INSERT') THEN
+        UPDATE user_stats 
+        SET total_submissions = total_submissions + 1,
+            updated_at = NOW()
+        WHERE user_id = NEW.user_id;
+    END IF;
+
+    -- Handle status changes
+    IF (TG_OP = 'INSERT' AND NEW.status = 'OK') OR
+       (TG_OP = 'UPDATE' AND OLD.status != 'OK' AND NEW.status = 'OK') THEN
+        -- Increment total_accepted only if it's their first OK for this problem
+        UPDATE user_stats 
+        SET total_accepted = CASE 
+                WHEN NOT EXISTS (
+                    SELECT 1 FROM submissions 
+                    WHERE user_id = NEW.user_id 
+                    AND problem_id = NEW.problem_id 
+                    AND status = 'OK'
+                    AND id != NEW.id
+                ) THEN total_accepted + 1
+                ELSE total_accepted
+            END,
+            updated_at = NOW()
+        WHERE user_id = NEW.user_id;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create triggers for both INSERT and UPDATE
+CREATE TRIGGER after_submission_insert
+    AFTER INSERT ON submissions
+    FOR EACH ROW
+    EXECUTE FUNCTION update_submission_stats();
+
+CREATE TRIGGER after_submission_update
+    AFTER UPDATE OF status ON submissions
+    FOR EACH ROW
+    EXECUTE FUNCTION update_submission_stats();
+
 -- Create function for automatic modified_at updates
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
