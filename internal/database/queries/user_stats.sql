@@ -31,4 +31,4 @@ SELECT
 FROM user_stats us
 JOIN users u ON u.id = us.user_id
 ORDER BY us.total_accepted DESC, acceptance_rate DESC
-LIMIT @limit;
+LIMIT $1;
