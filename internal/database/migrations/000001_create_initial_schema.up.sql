@@ -1,7 +1,7 @@
 -- Create enum types
 CREATE TYPE user_role AS ENUM ('normal', 'admin');
 CREATE TYPE problem_status AS ENUM ('draft', 'published');
-CREATE TYPE submission_status AS ENUM ('OK', 'Compile Error', 'Wrong Answer', 'Memory Limit', 'Time Limit', 'Runtime Error');
+CREATE TYPE submission_status AS ENUM ('Pending', 'OK', 'Compile Error', 'Wrong Answer', 'Memory Limit', 'Time Limit', 'Runtime Error');
 
 -- Users table
 CREATE TABLE users (
