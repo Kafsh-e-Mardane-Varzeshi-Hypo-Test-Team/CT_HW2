@@ -13,11 +13,12 @@ func RegisterRoutes(r *gin.Engine) {
 	{
 		api.POST("/register", handlers.RegisterUser)
 		api.POST("/login", handlers.LoginUser)
+		api.GET("/users", handlers.GetAllUsers)
 
 		protected := api.Group("/")
 		protected.Use(middlewares.AuthMiddleware()) // Protect routes
-		// {
-		// 	protected.GET("/profile", handlers.GetProfile)
-		// }
+		{
+			protected.GET("/profile", handlers.GetProfile)
+		}
 	}
 }

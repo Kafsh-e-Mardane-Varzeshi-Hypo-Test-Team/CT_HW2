@@ -1,5 +1,7 @@
 package models
 
+import "errors"
+
 type User struct {
 	ID       int
 	Username string
@@ -28,4 +30,19 @@ func FindUserByUsername(username string) (*User, error) {
 	}
 	return nil, errors.New("user not found")
 }
+
+func FindUserByID(userID int) (*User, error) {
+	for _, user := range users {
+		if user.ID == userID {
+			return &user, nil
+		}
+	}
+	return nil, errors.New("user not found")
+}
+
+func AllUsers() []User {
+	if users == nil {
+		return []User{}
+	}
+	return users
 }
