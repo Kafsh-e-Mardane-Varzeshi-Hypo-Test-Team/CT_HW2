@@ -20,6 +20,6 @@ func main() {
 
 	if port, exists := os.LookupEnv("PROJECT_PORT"); exists {
 		log.Println("Starting server on port", port)
-		r.Run(":" + port)
+		r.Run("localhost:" + port)
 	}
 }
