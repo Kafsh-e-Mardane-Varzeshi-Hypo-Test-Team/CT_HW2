@@ -18,10 +18,10 @@ const (
 	sessionMaxAge = 24 * time.Hour
 )
 
-func GenerateToken(username string) (string, error) {
+func GenerateToken(userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": username,
-		"exp":      time.Now().Add(sessionMaxAge).Unix(),
+		"userId": userId,
+		"exp":    time.Now().Add(sessionMaxAge).Unix(),
 	})
 
 	return token.SignedString(jwtSecret)
