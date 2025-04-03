@@ -24,16 +24,20 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		role, exists := claims["role"].(string)
+		userId, exists := claims["userId"].(string)
 		if !exists {
-			c.JSON(http.StatusForbidden, gin.H{"error": "Role not found"})
+			c.JSON(http.StatusForbidden, gin.H{"error": "userId not found"})
 			c.Abort()
 			return
 		}
 
-		// Store username and role in the request context
-		c.Set("username", claims["username"])
-		c.Set("role", role)
+		// TODO: query the database to get the user role
+
+		// TODO: check if token is expired (both cases of time and change of role or removal of user)
+
+		// Store user data in the request context
+		c.Set("userId", userId)
+		// c.Set("role", role)
 
 		c.Next()
 	}

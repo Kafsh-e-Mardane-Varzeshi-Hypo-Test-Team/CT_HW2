@@ -5,6 +5,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
+	"fmt"
+
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/models"
 	jwt "github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/pkg"
 )
@@ -23,7 +25,7 @@ func AuthenticateUser(username, password string) (string, error) {
 	if err == nil {
 		passwordMismatch := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if passwordMismatch == nil {
-			return jwt.GenerateToken(user.Username)
+			return jwt.GenerateToken(fmt.Sprint(user.ID))
 		}
 	}
 	return "", errors.New("invalid credentials")
