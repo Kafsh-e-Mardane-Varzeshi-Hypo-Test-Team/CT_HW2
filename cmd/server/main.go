@@ -29,7 +29,7 @@ func main() {
 	queries.UpdateUser(ctx, generated.UpdateUserParams{
 		ID:       1,
 		Username: "Arash Mohseni",
-		EncryptedPassword: "I'm GOOD",
+		EncryptedPassword: "I'm GOD",
 		Role: "admin"})
 	fmt.Println(queries.ListUsers(ctx))
 }
