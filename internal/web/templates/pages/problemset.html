@@ -1,13 +1,13 @@
 {{ define "title" }}Problem Set - KeMV Online Judge{{ end }}
 
 {{ define "content" }}
-<div class="problemset-container">
-    <div class="problemset-header">
+<div>
+    <div class="content-header">
         <h1>Problem Set</h1>
     </div>
 
-    <div class="problemset-table-container">
-        <table class="problemset-table">
+    <div>
+        <table>
             <thead>
                 <tr>
                     <th class="col-id">ID</th>
@@ -17,14 +17,10 @@
             </thead>
             <tbody>
                 {{ range .Problems }}
-                    <tr>
+                    <tr class="table-row">
                         <td>{{.ID}}</td>
-                        <td>
-                            <a href="/problem/{{.ID}}" class="problem-link">{{.Title}}</a>
-                        </td>
-                        <td>
-                            <a href="/submit/{{.ID}}" class="btn btn-small">Submit</a>
-                        </td>
+                        <td><a href="/problem/{{.ID}}" class="problem-link">{{.Title}}</a></td>
+                        <td><a href="/submit/{{.ID}}" class="btn">Submit</a></td>
                     </tr>
                 {{ else }}
                     <tr>
