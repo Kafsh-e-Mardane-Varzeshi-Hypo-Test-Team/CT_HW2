@@ -1,13 +1,11 @@
 {{ define "header" }}
 <header class="site-header">
     <div class="header-container">
-        <div class="branding">
-            <a href="/" class="logo-link">
-                <h1 class="site-title">KeMV Online Judge</h1>
-            </a>
-        </div>
+        <a href="/">
+            <h1 class="site-title">KeMV Online Judge</h1>
+        </a>
         
-        <nav class="main-navigation">
+        <nav>
             <ul class="nav-list">
                 <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="/problemset" class="nav-link">Problemset</a></li>
@@ -16,7 +14,7 @@
             </ul>
         </nav>
 
-        <nav class="admin-navigation">
+        <nav>
             <ul class="nav-list">
                 <li class="nav-item"><a href="/newproblem" class="nav-link">New Problem</a></li>
                 <li class="nav-item"><a href="/addedproblems" class="nav-link">
@@ -29,14 +27,18 @@
             </ul>
         </nav>
 
-        <div class="user-section">
+        <div>
             {{ with .User }}
-                <a href="/profile/{{ .Username }}" class="user-profile">
-                    <span class="username">{{ .Username }}</span>
-                </a>
+                <div class="auth-header"> 
+                    <a href="/profile/{{ .Username }}" class="user-profile">
+                        <span class="username">{{ .Username }}</span>
+                    </a>
+                    <a href="/logout" class="btn btn-logout">Logout</a>
+                </div>
+               
                 <!-- Suggested: Add logout button -->
             {{ else }}
-                <div class="auth-buttons">
+                <div class="auth-header">
                     <a href="/login" class="btn btn-login">Login</a>
                     <a href="/signup" class="btn btn-signup">Signup</a>
                 </div>
