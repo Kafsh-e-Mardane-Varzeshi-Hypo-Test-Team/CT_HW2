@@ -9,13 +9,13 @@ import (
 
 // RegisterRoutes initializes all API routes
 func RegisterRoutes(r *gin.Engine) {
-	api := r.Group("/api")
+	base := r.Group("/")
 	{
-		api.POST("/register", handlers.RegisterUser)
-		api.POST("/login", handlers.LoginUser)
-		api.GET("/users", handlers.GetAllUsers)
+		base.POST("/register", handlers.RegisterUser)
+		base.POST("/login", handlers.LoginUser)
+		base.GET("/users", handlers.GetAllUsers)
 
-		protected := api.Group("/")
+		protected := base.Group("/")
 		protected.Use(middlewares.AuthMiddleware()) // Protect routes
 		{
 			protected.GET("/profile", handlers.GetProfile)
