@@ -475,3 +475,47 @@ table td {
     color: var(--light-text);
     font-size: 0.875rem;
 }
+
+.problem-header {
+    margin-bottom: 2rem;
+}
+
+.problem-meta {
+    display: flex;
+    gap: 1rem;
+    margin: 0.5rem 0 1.5rem;
+    font-size: 0.875rem;
+    color: var(--light-text);
+    flex-wrap: wrap;
+}
+
+.problem-content {
+    margin-bottom: 2rem;
+}
+
+.problem-content section {
+    margin-bottom: 1.5rem;
+}
+
+.problem-content h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+}
+
+.markdown-content {
+    line-height: 1.7;
+}
+
+.markdown-content p {
+    margin-bottom: 1rem;
+}
+
+.problem-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
