@@ -7,8 +7,8 @@
 {{ end }}
 
 {{ define "content" }}
-<div class="problems-container">
-    <div class="problems-header">
+<div>
+    <div class="content-header">
         <h1>
             {{ if .User.IsAdmin }}
                 All Problems
@@ -18,8 +18,8 @@
         </h1>
     </div>
 
-    <div class="problems-table-container">
-        <table class="problems-table">
+    <div>
+        <table class="table">
             <thead>
                 <tr>
                     <th class="col-id">ID</th>
@@ -33,29 +33,29 @@
             </thead>
             <tbody>
                 {{ range .Problems }}
-                <tr>
+                <tr class="table-row">
                     <td>{{.ID}}</td>
                     <td>
                         <a href="/problem/{{.ID}}" class="problem-link">{{.Title}}</a>
                     </td>
                     {{ if $.User.IsAdmin }}
-                        <td><a href="/profile/{{.Owner}}" class="user-link">{{.Owner}}</a></td>
+                        <td><a href="/profile/{{.Owner}}">{{.Owner}}</a></td>
                     {{ end }}
                     <td>
                         <span class="status-badge status-{{.Status}}">{{.Status}}</span>
                     </td>
                     <td class="actions-cell">
                         <div class="actions-group">
-                            <a href="/editproblem/{{.ID}}" class="btn btn-small btn-edit">Edit</a>
+                            <a href="/editproblem/{{.ID}}" class="btn btn-edit">Edit</a>
                             {{ if eq .Status "Published" }}
-                                <form action="/draft-problem" method="POST" class="inline-form">
+                                <form action="/draft-problem" method="POST">
                                     <input type="hidden" name="problem_id" value="{{.ID}}">
-                                    <button type="submit" class="btn btn-small btn-warning">Draft</button>
+                                    <button type="submit" class="btn">Draft</button>
                                 </form>
                             {{ else }}
-                                <form action="/publish-problem" method="POST" class="inline-form">
+                                <form action="/publish-problem" method="POST">
                                     <input type="hidden" name="problem_id" value="{{.ID}}">
-                                    <button type="submit" class="btn btn-small btn-success">Publish</button>
+                                    <button type="submit" class="btn">Publish</button>
                                 </form>
                             {{ end }}
                         </div>
