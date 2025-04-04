@@ -1,0 +1,46 @@
+{{ define "title" }}Problem Set - KeMV Online Judge{{ end }}
+
+{{ define "content" }}
+<div>
+    <div class="content-header">
+        <h1>Problem Set</h1>
+    </div>
+
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-id">ID</th>
+                    <th class="col-name">Problem</th>
+                    <th class="col-actions">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .Problems }}
+                    <tr class="table-row">
+                        <td>{{.ID}}</td>
+                        <td><a href="/problem/{{.ID}}" class="problem-link">{{.Title}}</a></td>
+                        <td><a href="/submit/{{.ID}}" class="btn">Submit</a></td>
+                    </tr>
+                {{ else }}
+                    <tr>
+                        <td colspan="5" class="no-problems">No problems found</td>
+                    </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {{ if gt .CurrentPage 1 }}
+            <a href="/problemset?page={{ sub .CurrentPage 1 }}" class="pagination-link">Previous</a>
+        {{ end }}
+
+        <span class="pagination-current">{{.CurrentPage}}</span>
+
+        {{ if lt .CurrentPage .TotalPages }}
+            <a href="/problemset?page={{ add .CurrentPage 1 }}" class="pagination-link">Next</a>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

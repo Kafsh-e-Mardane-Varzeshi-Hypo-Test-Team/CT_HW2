@@ -1,0 +1,64 @@
+{{ define "title" }}Edit Problem - KeMV Online Judge{{ end }}
+
+{{ define "content" }}
+<div class="form-container">
+    <div class="form-header">
+        <h1>Edit Problem: {{.Title}}</h1>
+        <p>Update the problem details and test cases</p>
+    </div>
+
+    <form action="/editproblem" method="post" class="problem-form">
+        <input type="hidden" name="id" value="{{ .Problem.ID }}">
+
+        <div class="form-group">
+            <label class="form-label">Problem ID</label>
+            <div class="form-static-value">{{ .Problem.ID }}</div>
+        </div>
+
+        <div class="form-group">
+            <label for="title" class="form-label">Problem Title</label>
+            <input type="text" id="title" name="title" class="form-input" 
+                   value="{{ .Problem.Title }}" required>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="time" class="form-label">Time Limit (milliseconds)</label>
+                <input type="number" id="time" name="time" class="form-input" 
+                       min="1" max="10000" value="{{ .Problem.TimeLimit }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="memory" class="form-label">Memory Limit (MB)</label>
+                <input type="number" id="memory" name="memory" class="form-input" 
+                       min="64" max="1024" value="{{ .Problem.MemoryLimit }}" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="statement" class="form-label">Problem Statement</label>
+            <textarea id="statement" name="statement" class="form-textarea markdown-editor" 
+                      rows="10" required>{{ .Problem.Statement }}</textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="input" class="form-label">Input</label>
+                <textarea id="input" name="input" class="form-textarea code-editor" 
+                          rows="5" required>{{ .Problem.Input }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="output" class="form-label">Output</label>
+                <textarea id="output" name="output" class="form-textarea code-editor" 
+                          rows="5" required>{{ .Problem.Output }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="/addedproblems" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{{ end }}

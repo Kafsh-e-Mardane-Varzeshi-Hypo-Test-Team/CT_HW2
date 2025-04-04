@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="An online judge for competitive programming and problem-solving.">
+        <meta name="keywords" content="online judge, programming, competitive coding, problem-solving">
+        
+        <title>{{ block "title" . }}KeMV Online Judge{{ end }}</title>
+        
+        <link rel="stylesheet" href="/static/css/style.css">
+    </head>
+    <body>
+        {{ template "header" . }}
+        
+        <main class="container">
+            {{ block "content" . }}
+                <h1>Welcome to Kafsh e Mardane Varzeshi Online Judge!</h1>
+            {{ end }}
+        </main>
+        
+        {{ template "footer" . }}
+    </body>
+</html>

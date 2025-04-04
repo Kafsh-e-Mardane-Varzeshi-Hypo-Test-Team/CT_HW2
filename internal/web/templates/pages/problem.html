@@ -1,0 +1,34 @@
+{{ define "title" }}{{ .Problem.ID }}. {{ .Problem.Title }} - KeMV Online Judge{{ end }}
+
+{{ define "content" }}
+<div>
+    <div class="problem-header">
+        <h1>{{ .Problem.ID }}. {{ .Problem.Title }}</h1>
+        <div class="problem-meta">
+            <span class="time-limit">Time Limit: {{ .Problem.TimeLimit }}ms</span>
+            <span class="memory-limit">Memory Limit: {{ .Problem.MemoryLimit }}MB</span>
+        </div>
+        <div class="problem-actions">
+            <a href="/submit/{{ .Problem.ID }}" class="btn btn-primary">Submit Solution</a>
+            {{ if or .User.IsAdmin (eq .Problem.Owner .User.Username) }}
+                <a href="/editproblem/{{ .Problem.ID }}" class="btn btn-secondary">Edit Problem</a>
+            {{ end }}
+        </div>
+    </div>
+
+    <div class="problem-content">
+        <section class="problem-statement">
+            <div class="markdown-content">
+                {{ .Problem.Statement | markdown}}
+            </div>
+        </section>
+
+    </div>
+
+    <div class="problem-footer">
+        <div class="problem-stats">
+            <span>Owner: <a href="/profile/{{ .Problem.Owner }}">{{ .Problem.Owner }}</a></span>
+        </div>
+    </div>
+</div>
+{{ end }}

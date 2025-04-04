@@ -1,0 +1,76 @@
+{{ define "title" }}{{ .Profile.Username }} - KeMV Online Judge{{ end }}
+
+{{ define "content" }}
+<div>
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <div class="avatar-placeholder">{{ initial .Profile.Username }}</div>
+        </div>
+        <div class="profile-info">
+            <h1>{{ .Profile.Username }}</h1>
+            <div class="profile-role">
+                <span class="role-badge {{ if .Profile.IsAdmin }}admin{{ else }}user{{ end }}">
+                    {{ if .Profile.IsAdmin }}Admin{{ else }}User{{ end }}
+                </span>
+                {{ if .User.IsAdmin }}
+                    <form action="/{{ if .Profile.IsAdmin }}demote{{ else }}promote{{ end }}-user" method="POST" class="role-form">
+                        <input type="hidden" name="user_id" value="{{ .Profile.Username }}">
+                        <button type="submit" class="btn">
+                            {{ if .Profile.IsAdmin }}Remove Admin{{ else }}Make Admin{{ end }}
+                        </button>
+                    </form>
+                {{ end }}
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-stats">
+        <div class="stat-card">
+            <div class="stat-value">{{ .Profile.TotalSubmissions }}</div>
+            <div class="stat-label">Total Submissions</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ .Profile.SuccessfulSubmissions }}</div>
+            <div class="stat-label">Accepted</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ successRate .Profile.SuccessfulSubmissions .Profile.TotalSubmissions }}%</div>
+            <div class="stat-label">Success Rate</div>
+        </div>
+    </div>
+
+    <div class="profile-submissions">
+        <h2>Recent Submissions</h2>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>When</th>
+                        <th>Problem</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                        <th>Memory</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Profile.Submissions }}
+                    <tr class="table-row">
+                        <td>{{.ID}}</td>
+                        <td>{{ .When }}</td>
+                        <td><a href="/problem/{{.Problem.ID}}" class="problem-link">{{.Problem.Title}}</a></td>
+                        <td><span class="status-badge status-{{ .Status | status }}">{{ .Status }}</span></td>
+                        <td>{{ .Time }}ms</td>
+                        <td>{{ .Memory }}MB</td>
+                    </tr>
+                    {{ else }}
+                    <tr>
+                        <td colspan="6" class="no-submissions">No submissions yet</td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{ end }}
