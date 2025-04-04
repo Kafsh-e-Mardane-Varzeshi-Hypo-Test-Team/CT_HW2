@@ -10,13 +10,13 @@ type User struct {
 }
 
 // mock list of users
-var users = []User{
-	{ID: 1, Username: "user1", Password: "hashpassword1"},
-	{ID: 2, Username: "user2", Password: "hashpassword2"},
-}
+var userLastID = 0
+var users = []User{}
 
 // mock inserting into database
 func CreateUser(user *User) error {
+	userLastID++
+	user.ID = userLastID
 	users = append(users, *user)
 	return nil
 }
