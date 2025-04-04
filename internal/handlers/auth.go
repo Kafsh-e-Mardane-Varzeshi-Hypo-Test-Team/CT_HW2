@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/models"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/services"
+	jwt "github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/pkg"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +23,15 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "User registered successfully"})
+	token, err := jwt.GenerateToken(fmt.Sprint(user.ID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not generate token"})
+		return
+	}
+	// cookie yum yum
+	c.SetCookie("session_token", token, int(jwt.SessionMaxAge.Seconds()), "/", "", true, true)
+
+	c.JSON(http.StatusCreated, gin.H{"message": "User registered successfully and logged in"})
 }
 
 func LoginUser(c *gin.Context) {
@@ -37,5 +47,9 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	// cookie yum yum
+	// TODO: what should domain be?
+	c.SetCookie("session_token", token, int(jwt.SessionMaxAge.Seconds()), "/", "", true, true)
+
+	c.JSON(http.StatusOK, gin.H{"message": "User logged in successfully"})
 }
