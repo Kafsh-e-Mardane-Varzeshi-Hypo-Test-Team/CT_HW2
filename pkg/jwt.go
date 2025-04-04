@@ -15,13 +15,13 @@ var js, _ = os.LookupEnv("JWT_SECRET")
 var jwtSecret, _ = base64.StdEncoding.DecodeString(js)
 
 const (
-	sessionMaxAge = 24 * time.Hour
+	SessionMaxAge = 24 * time.Hour
 )
 
 func GenerateToken(userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userId": userId,
-		"exp":    time.Now().Add(sessionMaxAge).Unix(),
+		"exp":    time.Now().Add(SessionMaxAge).Unix(),
 	})
 
 	return token.SignedString(jwtSecret)
@@ -42,6 +42,24 @@ func ValidateToken(tokenString string) (jwt.MapClaims, bool) {
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
+		return nil, false
+	}
+
+	// Check if the token is expired
+	if claims["exp"] == nil {
+		return nil, false
+	}
+
+	exp, isFloat := claims["exp"].(float64)
+	if !isFloat {
+		return nil, false
+	}
+	if time.Now().Unix() > int64(exp) {
+		return nil, false
+	}
+
+	// Check if the userId is present in the claims
+	if claims["userId"] == nil {
 		return nil, false
 	}
 

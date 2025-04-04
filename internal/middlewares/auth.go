@@ -2,7 +2,9 @@ package middlewares
 
 import (
 	"net/http"
+	"strconv"
 
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/models"
 	jwt "github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/pkg"
 
 	"github.com/gin-gonic/gin"
@@ -10,8 +12,8 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.GetHeader("Authorization")
-		if token == "" {
+		token, err := c.Cookie("session_token")
+		if err != nil || token == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return
@@ -24,20 +26,27 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		userId, exists := claims["userId"].(string)
-		if !exists {
-			c.JSON(http.StatusForbidden, gin.H{"error": "userId not found"})
+		userId := claims["userId"]
+		if userId == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token does not contain userId"})
+			c.Abort()
+			return
+		}
+		userIdInt, err := strconv.Atoi(userId.(string))
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.Abort()
 			return
 		}
 
-		// TODO: query the database to get the user role
+		user, err := models.FindUserByID(userIdInt)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			c.Abort()
+			return
+		}
 
-		// TODO: check if token is expired (both cases of time and change of role or removal of user)
-
-		// Store user data in the request context
-		c.Set("userId", userId)
-		// c.Set("role", role)
+		c.Set("user", user)
 
 		c.Next()
 	}
