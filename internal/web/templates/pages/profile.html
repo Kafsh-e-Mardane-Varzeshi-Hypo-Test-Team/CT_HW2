@@ -1,7 +1,7 @@
 {{ define "title" }}{{ .Profile.Username }} - KeMV Online Judge{{ end }}
 
 {{ define "content" }}
-<div class="profile-container">
+<div>
     <div class="profile-header">
         <div class="profile-avatar">
             <div class="avatar-placeholder">{{ initial .Profile.Username }}</div>
@@ -15,7 +15,7 @@
                 {{ if .User.IsAdmin }}
                     <form action="/{{ if .Profile.IsAdmin }}demote{{ else }}promote{{ end }}-user" method="POST" class="role-form">
                         <input type="hidden" name="user_id" value="{{ .Profile.Username }}">
-                        <button type="submit" class="btn btn-small {{ if .Profile.IsAdmin }}btn-warning{{ else }}btn-success{{ end }}">
+                        <button type="submit" class="btn">
                             {{ if .Profile.IsAdmin }}Remove Admin{{ else }}Make Admin{{ end }}
                         </button>
                     </form>
@@ -41,8 +41,8 @@
 
     <div class="profile-submissions">
         <h2>Recent Submissions</h2>
-        <div class="table-container">
-            <table class="submissions-table">
+        <div>
+            <table>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -55,7 +55,7 @@
                 </thead>
                 <tbody>
                     {{ range .Profile.Submissions }}
-                    <tr class="submission-row">
+                    <tr class="table-row">
                         <td>{{.ID}}</td>
                         <td>{{ .When }}</td>
                         <td><a href="/problem/{{.Problem.ID}}" class="problem-link">{{.Problem.Title}}</a></td>
