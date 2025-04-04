@@ -263,3 +263,29 @@ table td {
     background-color: var(--primary-color);
     color: white;
 }
+
+.status-accepted {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+}
+
+.status-wrong_answer, .status-runtime_error, .status-time_limit, .status-error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+}
+
+.status-pending {
+    background-color: rgba(9, 169, 222, 0.139);
+    color: var(--primary-color);
+}
+
+.status-compile_error {
+    background-color: rgba(156, 163, 175, 0.1);
+    color: var(--light-text);
+}
+
+.no-submissions {
+    text-align: center;
+    padding: 2rem;
+    color: var(--light-text);
+}

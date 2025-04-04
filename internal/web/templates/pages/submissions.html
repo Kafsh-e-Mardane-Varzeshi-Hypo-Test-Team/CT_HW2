@@ -1,13 +1,13 @@
 {{ define "title" }}Submissions - KeMV Online Judge{{ end }}
 
 {{ define "content" }}
-<div class="submissions-container">
-    <div class="submissions-header">
+<div>
+    <div class="content-header">
         <h1>Submissions</h1>
     </div>
 
-    <div class="table-container">
-        <table class="submissions-table">
+    <div>
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
@@ -20,7 +20,7 @@
             </thead>
             <tbody>
                 {{ range .Submissions }}
-                <tr class="submission-row">
+                <tr class="table-row">
                     <td>{{ .ID }}</td>
                     <td>{{ .When }}</td>
                     <td><a href="/problem/{{.Problem.ID}}" class="problem-link">{{.Problem.Title}}</a></td>
