@@ -3,11 +3,11 @@
 {{ define "content" }}
 <div class="auth-container">
     <div class="auth-card">
-        <div class="auth-header">
-            <h1 class="auth-title">Create Account</h1>
+        <div class="content-header">
+            <h1>Create Account</h1>
         </div>
 
-        <form action="/signup" method="post" class="auth-form" id="signup-form">
+        <form action="/signup" method="post" id="signup-form">
             <div class="form-group">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" id="username" name="username" class="form-input" 
@@ -41,7 +41,7 @@
             {{ end }}
         </form>
         
-        <div class="auth-footer">
+        <div>
             <p>Already have an account? <a href="/login" class="text-link">Log in</a></p>
         </div>
     </div>
