@@ -11,9 +11,15 @@ import (
 )
 
 var (
+	Server   ServerConfig
 	JWT      JWTConfig
 	Database DatabaseConfig
 )
+
+type ServerConfig struct {
+	Host string
+	Port int
+}
 
 type JWTConfig struct {
 	SecretKey string
@@ -28,6 +34,10 @@ type DatabaseConfig struct {
 	SSLMode      string
 }
 
+func (s ServerConfig) Address() string {
+	return fmt.Sprintf("%s:%d", s.Host, s.Port)
+}
+
 // ConnectionString returns a formatted PostgreSQL connection string
 func (c DatabaseConfig) ConnectionString() string {
 	return fmt.Sprintf(
@@ -38,10 +48,16 @@ func (c DatabaseConfig) ConnectionString() string {
 
 // LoadConfig loads configuration from environment variables
 func LoadConfig() error {
+	var err error
 	// TODO: docker-compose up
 	loadEnv()
 
-	err := LoadJWTConfig()
+	err = LoadServerConfig()
+	if err != nil {
+		return fmt.Errorf("failed to load server config: %w", err)
+	}
+
+	err = LoadJWTConfig()
 	if err != nil {
 		return fmt.Errorf("failed to load JWT config: %w", err)
 	}
@@ -51,6 +67,29 @@ func LoadConfig() error {
 		return fmt.Errorf("failed to load database config: %w", err)
 	}
 
+	return nil
+}
+
+func LoadServerConfig() error {
+	host, err := getEnv("SERVER_HOST")
+	if err != nil {
+		return err
+	}
+
+	portStr, err := getEnv("SERVER_PORT")
+	if err != nil {
+		return err
+	}
+
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		return fmt.Errorf("SERVER_PORT must be a valid number: %w", err)
+	}
+
+	Server = ServerConfig{
+		Host: host,
+		Port: port,
+	}
 	return nil
 }
 

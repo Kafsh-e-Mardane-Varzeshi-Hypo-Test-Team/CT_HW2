@@ -1,10 +1,9 @@
-package main
+package handlers
 
 import (
 	"net/http"
 	"strconv"
 
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/web/renderer"
 	"github.com/gin-gonic/gin"
 )
 
@@ -122,41 +121,7 @@ Print two space-separated integers representing the indices of the two numbers.
 	}
 )
 
-func main() {
-	path := "internal/web/templates"
-
-	r := gin.Default()
-	r.Static("/static", "./static")
-	r.HTMLRender = renderer.LoadTemplates(path)
-
-	r.Use(authMiddleware())
-
-	r.GET("/", indexPage)
-	r.GET("/login", loginPage)
-	r.POST("/login", loginHandler)
-	r.GET("/signup", signupPage)
-	// r.POST("/signup", signupHandler)
-	r.GET("/profile/:username", profilePage)
-	// r.POST("/demote-user")
-	// r.POST("/promote-user")
-	r.GET("/problemset", problemsetPage)
-	r.GET("/submit/:id", submitPage)
-	r.GET("/submit", submitPage)
-	// r.POST("/submit")
-	r.GET("/submissions", submissionsPage)
-	r.GET("/addedproblems", addedProblemsPage)
-	// r.POST("/draft-problem")
-	// r.POST("/publish-problem")
-	r.GET("/problem/:id", problemPage)
-	r.GET("/newproblem", newProblemPage)
-	// r.POST("/newproblem")
-	r.GET("/editproblem/:id", editProblemPage)
-	// r.POST("/editproblem")
-
-	r.Run(":8080")
-}
-
-func editProblemPage(c *gin.Context) {
+func EditProblemPage(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	c.HTML(http.StatusOK, "edit_problem.html", gin.H{
 		"Problem": problems[id-1],
@@ -164,13 +129,13 @@ func editProblemPage(c *gin.Context) {
 	})
 }
 
-func newProblemPage(c *gin.Context) {
+func NewProblemPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "new_problem.html", gin.H{
 		"User": admin,
 	})
 }
 
-func problemPage(c *gin.Context) {
+func ProblemPage(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	c.HTML(http.StatusOK, "problem.html", gin.H{
 		"Problem": problems[id-1],
@@ -181,7 +146,7 @@ func problemPage(c *gin.Context) {
 	})
 }
 
-func addedProblemsPage(c *gin.Context) {
+func AddedProblemsPage(c *gin.Context) {
 	currentPage, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		c.Redirect(http.StatusFound, "/addedproblems?page=1")
@@ -195,7 +160,7 @@ func addedProblemsPage(c *gin.Context) {
 	})
 }
 
-func submissionsPage(c *gin.Context) {
+func SubmissionsPage(c *gin.Context) {
 	currentPage, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		c.Redirect(http.StatusFound, "/submissions?page=1")
@@ -208,14 +173,14 @@ func submissionsPage(c *gin.Context) {
 	})
 }
 
-func submitPage(c *gin.Context) {
+func SubmitPage(c *gin.Context) {
 	problemID := c.Param("id")
 	c.HTML(http.StatusOK, "submit.html", gin.H{
 		"ID": problemID,
 	})
 }
 
-func problemsetPage(c *gin.Context) {
+func ProblemsetPage(c *gin.Context) {
 	currentPage, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		c.Redirect(http.StatusFound, "/problemset?page=1")
@@ -228,7 +193,7 @@ func problemsetPage(c *gin.Context) {
 	})
 }
 
-func profilePage(c *gin.Context) {
+func ProfilePage(c *gin.Context) {
 	profileUsername := c.Param("username")
 	c.HTML(http.StatusOK, "profile.html", gin.H{
 		"User": admin,
@@ -242,11 +207,11 @@ func profilePage(c *gin.Context) {
 	})
 }
 
-func signupPage(c *gin.Context) {
+func SignupPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "signup.html", nil)
 }
 
-func loginHandler(c *gin.Context) {
+func LoginHandler(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
@@ -262,15 +227,16 @@ func loginHandler(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/")
 }
 
-func loginPage(c *gin.Context) {
+func LoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", nil)
 }
 
-func indexPage(c *gin.Context) {
+func IndexPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)
 }
 
-func authMiddleware() gin.HandlerFunc {
+// change this
+func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username, err := c.Cookie("session_token")
 		if err == nil {

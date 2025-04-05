@@ -8,6 +8,9 @@ import (
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/config"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/database"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/database/generated"
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/web/renderer"
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/routes"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -32,4 +35,15 @@ func main() {
 		EncryptedPassword: "I'm GOD",
 		Role:              "admin"})
 	fmt.Println(queries.ListUsers(ctx))
+
+	// Init Server
+	path := "internal/web/templates"
+
+	r := gin.Default()
+	r.Static("/static", "./static")
+	r.HTMLRender = renderer.LoadTemplates(path)
+
+	routes.RegisterRoutes(r)
+
+	r.Run(config.Server.Address())
 }
