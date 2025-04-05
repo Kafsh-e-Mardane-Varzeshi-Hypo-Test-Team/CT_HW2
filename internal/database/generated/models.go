@@ -56,6 +56,7 @@ func (ns NullProblemStatus) Value() (driver.Value, error) {
 type SubmissionStatus string
 
 const (
+	SubmissionStatusPending      SubmissionStatus = "Pending"
 	SubmissionStatusOK           SubmissionStatus = "OK"
 	SubmissionStatusCompileError SubmissionStatus = "Compile Error"
 	SubmissionStatusWrongAnswer  SubmissionStatus = "Wrong Answer"
