@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/config"
@@ -34,7 +33,6 @@ func main() {
 		Username:          "Arash Mohseni",
 		EncryptedPassword: "I'm GOD",
 		Role:              "admin"})
-	fmt.Println(queries.ListUsers(ctx))
 
 	// Init Server
 	path := "internal/web/templates"
