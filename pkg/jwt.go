@@ -1,18 +1,12 @@
 package pkg
 
 import (
-	"encoding/base64"
 	"errors"
-	"os"
 	"time"
 
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/config"
 	"github.com/golang-jwt/jwt/v5"
 )
-
-// TODO: function that loads all env variables, log.Fatals any error if unsuccessful
-// prolly add a map and function for retrieving env variables (no error output)
-var js, _ = os.LookupEnv("JWT_SECRET")
-var jwtSecret, _ = base64.StdEncoding.DecodeString(js)
 
 const (
 	SessionMaxAge = 24 * time.Hour
@@ -24,7 +18,7 @@ func GenerateToken(userId string) (string, error) {
 		"exp":    time.Now().Add(SessionMaxAge).Unix(),
 	})
 
-	return token.SignedString(jwtSecret)
+	return token.SignedString(config.JWT.SecretKey)
 }
 
 func ValidateToken(tokenString string) (jwt.MapClaims, bool) {
@@ -33,7 +27,7 @@ func ValidateToken(tokenString string) (jwt.MapClaims, bool) {
 		if token.Method != jwt.SigningMethodHS256 {
 			return nil, errors.New("unexpected signing method")
 		}
-		return jwtSecret, nil
+		return config.JWT.SecretKey, nil
 	})
 
 	if err != nil {

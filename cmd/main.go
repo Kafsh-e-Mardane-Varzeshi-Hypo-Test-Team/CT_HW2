@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/config"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/routes"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +11,7 @@ import (
 
 func main() {
 	// TODO: docker-compose up
-	config.LoadEnv()
+	// config.LoadEnv()
 
 	r := gin.Default()
 
