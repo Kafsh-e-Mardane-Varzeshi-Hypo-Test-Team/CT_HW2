@@ -42,7 +42,7 @@ func (h *Handler) SignupHandler(c *gin.Context) {
 	token, err := jwt.GenerateToken(fmt.Sprint(userId), h.Service.Configs.JWT.SecretKey)
 	if err != nil {
 		c.HTML(http.StatusInternalServerError, "signup.html", gin.H{
-			"Error": "Could not generate token",
+			"Error": "Could not generate token, " + err.Error(),
 		})
 		return
 	}

@@ -22,7 +22,7 @@ type ServerConfig struct {
 }
 
 type JWTConfig struct {
-	SecretKey string
+	SecretKey []byte
 }
 
 type DatabaseConfig struct {
@@ -107,7 +107,7 @@ func LoadJWTConfig() (JWTConfig, error) {
 	}
 
 	return JWTConfig{
-		SecretKey: string(jwtSecret),
+		SecretKey: jwtSecret,
 	}, nil
 }
 
