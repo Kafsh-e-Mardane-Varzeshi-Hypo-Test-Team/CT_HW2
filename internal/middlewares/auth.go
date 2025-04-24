@@ -4,13 +4,12 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/models"
 	jwt "github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/pkg"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := c.Cookie("session_token")
 		if err != nil || token == "" {
@@ -19,7 +18,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		claims, valid := jwt.ValidateToken(token)
+		claims, valid := jwt.ValidateToken(token, m.Configs.JWT.SecretKey)
 		if !valid {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			c.Abort()
@@ -39,7 +38,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		user, err := models.FindUserByID(userIdInt)
+		user, err := m.Queries.GetUserById(c, int32(userIdInt))
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.Abort()

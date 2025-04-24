@@ -121,7 +121,7 @@ Print two space-separated integers representing the indices of the two numbers.
 	}
 )
 
-func EditProblemPage(c *gin.Context) {
+func (h *Handler) EditProblemPage(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	c.HTML(http.StatusOK, "edit_problem.html", gin.H{
 		"Problem": problems[id-1],
@@ -129,13 +129,13 @@ func EditProblemPage(c *gin.Context) {
 	})
 }
 
-func NewProblemPage(c *gin.Context) {
+func (h *Handler) NewProblemPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "new_problem.html", gin.H{
 		"User": admin,
 	})
 }
 
-func ProblemPage(c *gin.Context) {
+func (h *Handler) ProblemPage(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	c.HTML(http.StatusOK, "problem.html", gin.H{
 		"Problem": problems[id-1],
@@ -146,7 +146,7 @@ func ProblemPage(c *gin.Context) {
 	})
 }
 
-func AddedProblemsPage(c *gin.Context) {
+func (h *Handler) AddedProblemsPage(c *gin.Context) {
 	currentPage, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		c.Redirect(http.StatusFound, "/addedproblems?page=1")
@@ -160,7 +160,7 @@ func AddedProblemsPage(c *gin.Context) {
 	})
 }
 
-func SubmissionsPage(c *gin.Context) {
+func (h *Handler) SubmissionsPage(c *gin.Context) {
 	currentPage, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		c.Redirect(http.StatusFound, "/submissions?page=1")
@@ -173,14 +173,14 @@ func SubmissionsPage(c *gin.Context) {
 	})
 }
 
-func SubmitPage(c *gin.Context) {
+func (h *Handler) SubmitPage(c *gin.Context) {
 	problemID := c.Param("id")
 	c.HTML(http.StatusOK, "submit.html", gin.H{
 		"ID": problemID,
 	})
 }
 
-func ProblemsetPage(c *gin.Context) {
+func (h *Handler) ProblemsetPage(c *gin.Context) {
 	currentPage, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		c.Redirect(http.StatusFound, "/problemset?page=1")
@@ -193,7 +193,7 @@ func ProblemsetPage(c *gin.Context) {
 	})
 }
 
-func ProfilePage(c *gin.Context) {
+func (h *Handler) ProfilePage(c *gin.Context) {
 	profileUsername := c.Param("username")
 	c.HTML(http.StatusOK, "profile.html", gin.H{
 		"User": admin,
@@ -207,36 +207,12 @@ func ProfilePage(c *gin.Context) {
 	})
 }
 
-func SignupPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "signup.html", nil)
-}
-
-func LoginHandler(c *gin.Context) {
-	username := c.PostForm("username")
-	password := c.PostForm("password")
-
-	if username != "admin" || password != "admin" {
-		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
-			"Error": "Invalid username or password",
-		})
-		return
-	}
-
-	c.SetCookie("session_token", username, 3220, "/", "", false, true)
-
-	c.Redirect(http.StatusFound, "/")
-}
-
-func LoginPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "login.html", nil)
-}
-
-func IndexPage(c *gin.Context) {
+func (h *Handler) IndexPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.html", nil)
 }
 
 // change this
-func AuthMiddleware() gin.HandlerFunc {
+func (h *Handler) AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		username, err := c.Cookie("session_token")
 		if err == nil {
