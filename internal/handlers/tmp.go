@@ -206,19 +206,3 @@ func (h *Handler) ProfilePage(c *gin.Context) {
 		},
 	})
 }
-
-func (h *Handler) IndexPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", nil)
-}
-
-// change this
-func (h *Handler) AuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		username, err := c.Cookie("session_token")
-		if err == nil {
-			// If the cookie exists, pass the username to the template
-			c.Set("username", username)
-		}
-		c.Next()
-	}
-}

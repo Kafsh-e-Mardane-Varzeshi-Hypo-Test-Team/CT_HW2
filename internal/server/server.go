@@ -30,18 +30,21 @@ func (s *Server) Start() {
 
 func (s *Server) registerRoutes() {
 	service := services.NewService(s.Configs, s.Queries)
-	_ = middlewares.NewMiddleware(s.Configs, s.Queries)
+	middleware := middlewares.NewMiddleware(s.Configs, s.Queries)
 	handler := handlers.NewHandler(service)
 
 	r := s.Engine
-	// TOOD: CHANGE THIS
-	r.Use(handler.AuthMiddleware())
+
+	r.Use(middleware.AuthMiddleware())
 
 	r.GET("/", handler.IndexPage)
-	r.GET("/login", handler.LoginPage)
-	r.POST("/login", handler.LoginHandler)
-	r.GET("/signup", handler.SignupPage)
-	r.POST("/signup", handler.SignupHandler)
+
+	r.GET("/login", handler.LoginGet)
+	r.POST("/login", handler.LoginPost)
+	r.GET("/signup", handler.SignupGet)
+	r.POST("/signup", handler.SignupPost)
+	r.POST("/logout", handler.Logout)
+
 	r.GET("/profile/:username", handler.ProfilePage)
 	// r.POST("/demote-user")
 	// r.POST("/promote-user")

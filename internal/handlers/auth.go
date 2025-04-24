@@ -9,15 +9,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) SignupPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "signup.html", nil)
+func (h *Handler) SignupGet(c *gin.Context) {
+	_, exists := c.Get("User")
+
+	if !exists {
+		c.HTML(http.StatusOK, "signup.html", nil)
+	} else {
+		// TODO: code must be 302 for get, and 303 for post
+		c.Redirect(http.StatusSeeOther, "/")
+		return
+	}
 }
 
-func (h *Handler) LoginPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "login.html", nil)
+func (h *Handler) LoginGet(c *gin.Context) {
+	_, exists := c.Get("User")
+
+	if !exists {
+		c.HTML(http.StatusOK, "login.html", nil)
+	} else {
+		// TODO: code must be 302 for get, and 303 for post
+		c.Redirect(http.StatusSeeOther, "/")
+		return
+	}
 }
 
-func (h *Handler) SignupHandler(c *gin.Context) {
+func (h *Handler) SignupPost(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 	confirm_password := c.PostForm("confirm_password")
@@ -26,6 +42,7 @@ func (h *Handler) SignupHandler(c *gin.Context) {
 		c.HTML(http.StatusBadRequest, "signup.html", gin.H{
 			"Error": "Invalid username, password or confirm password",
 		})
+		c.Abort()
 		return
 	}
 
@@ -36,6 +53,7 @@ func (h *Handler) SignupHandler(c *gin.Context) {
 			// TODO: maybe remove original error message after development
 			"Error": "Could not register user, " + err.Error(),
 		})
+		c.Abort()
 		return
 	}
 
@@ -44,6 +62,7 @@ func (h *Handler) SignupHandler(c *gin.Context) {
 		c.HTML(http.StatusInternalServerError, "signup.html", gin.H{
 			"Error": "Could not generate token, " + err.Error(),
 		})
+		c.Abort()
 		return
 	}
 	// cookie yum yum
@@ -52,7 +71,7 @@ func (h *Handler) SignupHandler(c *gin.Context) {
 	c.Redirect(http.StatusCreated, "/")
 }
 
-func (h *Handler) LoginHandler(c *gin.Context) {
+func (h *Handler) LoginPost(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
@@ -61,6 +80,7 @@ func (h *Handler) LoginHandler(c *gin.Context) {
 		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
 			"Error": "Invalid username or password",
 		})
+		c.Abort()
 		return
 	}
 
@@ -69,4 +89,24 @@ func (h *Handler) LoginHandler(c *gin.Context) {
 	c.SetCookie("session_token", token, int(jwt.SessionMaxAge.Seconds()), "/", "", true, true)
 
 	c.Redirect(http.StatusFound, "/")
+}
+
+func (h *Handler) Logout(c *gin.Context) {
+	_, exists := c.Get("User")
+
+	if !exists {
+		c.HTML(http.StatusUnauthorized, "login.html", gin.H{
+			"Error": "You are not logged in",
+		})
+		c.Abort()
+		return
+	}
+
+	ClearSessionCookie(c)
+
+	c.Redirect(http.StatusFound, "/")
+}
+
+func ClearSessionCookie(c *gin.Context) {
+	c.SetCookie("session_token", "", -1, "/", "", true, true)
 }

@@ -17,7 +17,13 @@ func (s *Service) RegisterUser(c context.Context, username, password string) (in
 	if err != nil {
 		return 0, err
 	}
-	user, err := s.Queries.CreateUser(c, generated.CreateUserParams{
+
+	user, err := s.Queries.GetUserByUsername(c, username)
+	if err == nil {
+		return 0, errors.New("username is already taken")
+	}
+
+	user, err = s.Queries.CreateUser(c, generated.CreateUserParams{
 		Username:          username,
 		EncryptedPassword: string(hashedPassword),
 		Role:              generated.UserRoleNormal,

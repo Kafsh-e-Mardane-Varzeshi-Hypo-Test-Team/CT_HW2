@@ -137,9 +137,19 @@ a {
     font-weight: 500;
 }
 
+.logout-form {
+    padding: 0.5rem 0;
+    position: relative;
+}
+
 .btn-logout {
-    border-color: var(--text-color);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
     background-color: transparent;
+}
+
+.btn-logout:hover {
+    background-color: rgba(37, 99, 235, 0.1);
 }
 
 .username {
