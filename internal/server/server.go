@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/config"
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/database/generated"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/handlers"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/middlewares"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/services"
@@ -10,16 +9,16 @@ import (
 )
 
 type Server struct {
-	Engine  *gin.Engine
-	Configs *config.Config
-	Queries *generated.Queries
+	Engine   *gin.Engine
+	Configs  *config.Config
+	Database *services.DBService
 }
 
-func NewServer(engine *gin.Engine, configs *config.Config, queries *generated.Queries) *Server {
+func NewServer(engine *gin.Engine, configs *config.Config, database *services.DBService) *Server {
 	return &Server{
-		Engine:  engine,
-		Configs: configs,
-		Queries: queries,
+		Engine:   engine,
+		Configs:  configs,
+		Database: database,
 	}
 }
 
@@ -29,8 +28,8 @@ func (s *Server) Start() {
 }
 
 func (s *Server) registerRoutes() {
-	service := services.NewService(s.Configs, s.Queries)
-	middleware := middlewares.NewMiddleware(s.Configs, s.Queries)
+	service := services.NewService(s.Configs, s.Database)
+	middleware := middlewares.NewMiddleware(s.Configs, s.Database)
 	handler := handlers.NewHandler(service)
 
 	r := s.Engine

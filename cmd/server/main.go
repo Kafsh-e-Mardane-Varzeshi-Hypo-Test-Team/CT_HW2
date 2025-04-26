@@ -33,6 +33,6 @@ func main() {
 	r.Static("/static", "./static")
 	r.HTMLRender = renderer.LoadTemplates(path)
 
-	server := server.NewServer(r, configs, dbService.Queries)
+	server := server.NewServer(r, configs, dbService)
 	server.Start()
 }

@@ -45,7 +45,7 @@ func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// TODO: session + refresh token, if refresh token is expired then query
-		user, err := m.Queries.GetUserById(c, int32(userIdInt))
+		user, err := m.Database.Queries.GetUserById(c, int32(userIdInt))
 		if err != nil {
 			handlers.ClearSessionCookie(c)
 			c.Redirect(http.StatusUnauthorized, "/login")

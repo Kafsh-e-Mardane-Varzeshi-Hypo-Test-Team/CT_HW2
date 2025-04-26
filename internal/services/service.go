@@ -2,17 +2,16 @@ package services
 
 import (
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/config"
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/database/generated"
 )
 
 type Service struct {
-	Configs *config.Config
-	Queries *generated.Queries
+	Configs  *config.Config
+	Database *DBService
 }
 
-func NewService(configs *config.Config, queries *generated.Queries) *Service {
+func NewService(configs *config.Config, database *DBService) *Service {
 	return &Service{
-		Configs: configs,
-		Queries: queries,
+		Configs:  configs,
+		Database: database,
 	}
 }
