@@ -106,6 +106,22 @@ CREATE TRIGGER after_submission_update
     FOR EACH ROW
     EXECUTE FUNCTION update_submission_stats();
 
+-- Create trigger function to initialize user stats
+CREATE OR REPLACE FUNCTION initialize_user_stats() 
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO user_stats (user_id, total_submissions, total_accepted)
+    VALUES (NEW.id, 0, 0);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger to automatically create user stats when a user is created
+CREATE TRIGGER create_user_stats_after_user_insert
+    AFTER INSERT ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION initialize_user_stats();
+
 -- Create function for automatic modified_at updates
 CREATE OR REPLACE FUNCTION update_modified_column()
 RETURNS TRIGGER AS $$
