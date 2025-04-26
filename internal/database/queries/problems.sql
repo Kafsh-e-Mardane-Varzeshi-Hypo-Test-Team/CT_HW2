@@ -5,12 +5,18 @@ WHERE id = $1;
 -- name: ListPublishedProblems :many
 SELECT * FROM problems
 WHERE status = 'published'
-ORDER BY id;
+ORDER BY id
+LIMIT $1 OFFSET $2;
 
 -- name: ListUserProblems :many
 SELECT * FROM problems
 WHERE owner_id = $1
 ORDER BY id;
+
+-- TODO: optimize this query
+-- name: GetPublishedProblemCount :one
+SELECT COUNT(*) FROM problems
+WHERE status = 'published';
 
 -- name: CreateProblem :one
 INSERT INTO problems (

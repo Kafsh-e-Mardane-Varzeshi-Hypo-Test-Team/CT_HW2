@@ -7,23 +7,23 @@ type Handler struct {
 }
 
 type User struct {
-	ID       int
+	ID       int32
 	Username string
 	IsAdmin  bool
 }
 
 type Problem struct {
-	ID          int
-	Title       string
-	Owner       string
-	Status      string
-	TimeLimit   int
-	MemoryLimit int
-	Statement   string
+	ID            int32
+	Title         string
+	Owner         string
+	Status        string
+	TimeLimitMs   int32
+	MemoryLimitMb int32
+	Statement     string
 }
 
 type Submission struct {
-	ID      int
+	ID      int32
 	When    string
 	Problem Problem
 	Status  string

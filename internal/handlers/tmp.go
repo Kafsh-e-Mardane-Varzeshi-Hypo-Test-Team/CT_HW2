@@ -180,19 +180,6 @@ func (h *Handler) SubmitPage(c *gin.Context) {
 	})
 }
 
-func (h *Handler) ProblemsetPage(c *gin.Context) {
-	currentPage, err := strconv.Atoi(c.Query("page"))
-	if err != nil {
-		c.Redirect(http.StatusFound, "/problemset?page=1")
-		return
-	}
-	c.HTML(http.StatusOK, "problemset.html", gin.H{
-		"Problems":    problems,
-		"CurrentPage": currentPage,
-		"TotalPages":  3,
-	})
-}
-
 func (h *Handler) ProfilePage(c *gin.Context) {
 	profileUsername := c.Param("username")
 	c.HTML(http.StatusOK, "profile.html", gin.H{
