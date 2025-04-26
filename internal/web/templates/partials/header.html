@@ -33,7 +33,11 @@
                     <a href="/profile/{{ .Username }}" class="user-profile">
                         <span class="username">{{ .Username }}</span>
                     </a>
-                    <a href="/logout" class="btn btn-logout">Logout</a>
+                    <form method="POST" action="/logout" class="logout-form">
+                        <button type="submit" class="btn btn-logout">
+                            Logout
+                        </button>
+                    </form>
                 </div>
                
                 <!-- Suggested: Add logout button -->

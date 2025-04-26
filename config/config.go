@@ -10,11 +10,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var (
+type Config struct {
 	Server   ServerConfig
 	JWT      JWTConfig
 	Database DatabaseConfig
-)
+}
 
 type ServerConfig struct {
 	Host string
@@ -22,7 +22,7 @@ type ServerConfig struct {
 }
 
 type JWTConfig struct {
-	SecretKey string
+	SecretKey []byte
 }
 
 type DatabaseConfig struct {
@@ -34,12 +34,12 @@ type DatabaseConfig struct {
 	SSLMode      string
 }
 
-func (s ServerConfig) Address() string {
+func (s *ServerConfig) Address() string {
 	return fmt.Sprintf("%s:%d", s.Host, s.Port)
 }
 
 // ConnectionString returns a formatted PostgreSQL connection string
-func (c DatabaseConfig) ConnectionString() string {
+func (c *DatabaseConfig) ConnectionString() string {
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		c.User, c.Password, c.Host, c.Port, c.DatabaseName, c.SSLMode,
@@ -47,114 +47,114 @@ func (c DatabaseConfig) ConnectionString() string {
 }
 
 // LoadConfig loads configuration from environment variables
-func LoadConfig() error {
-	var err error
+func LoadConfig() (*Config, error) {
 	// TODO: docker-compose up
 	loadEnv()
 
-	err = LoadServerConfig()
+	serverConfig, err := LoadServerConfig()
 	if err != nil {
-		return fmt.Errorf("failed to load server config: %w", err)
+		return nil, fmt.Errorf("failed to load server config: %w", err)
 	}
 
-	err = LoadJWTConfig()
+	jwtConfig, err := LoadJWTConfig()
 	if err != nil {
-		return fmt.Errorf("failed to load JWT config: %w", err)
+		return nil, fmt.Errorf("failed to load JWT config: %w", err)
 	}
 
-	err = LoadDatabaseConfig()
+	databaseConfig, err := LoadDatabaseConfig()
 	if err != nil {
-		return fmt.Errorf("failed to load database config: %w", err)
+		return nil, fmt.Errorf("failed to load database config: %w", err)
 	}
 
-	return nil
+	return &Config{
+		Server:   serverConfig,
+		JWT:      jwtConfig,
+		Database: databaseConfig,
+	}, nil
 }
 
-func LoadServerConfig() error {
+func LoadServerConfig() (ServerConfig, error) {
 	host, err := getEnv("SERVER_HOST")
 	if err != nil {
-		return err
+		return ServerConfig{}, err
 	}
 
 	portStr, err := getEnv("SERVER_PORT")
 	if err != nil {
-		return err
+		return ServerConfig{}, err
 	}
 
 	port, err := strconv.Atoi(portStr)
 	if err != nil {
-		return fmt.Errorf("SERVER_PORT must be a valid number: %w", err)
+		return ServerConfig{}, fmt.Errorf("SERVER_PORT must be a valid number: %w", err)
 	}
 
-	Server = ServerConfig{
+	return ServerConfig{
 		Host: host,
 		Port: port,
-	}
-	return nil
+	}, nil
 }
 
-func LoadJWTConfig() error {
+func LoadJWTConfig() (JWTConfig, error) {
 	js, err := getEnv("JWT_SECRET")
 	if err != nil {
-		return err
+		return JWTConfig{}, err
 	}
 
 	jwtSecret, err := base64.StdEncoding.DecodeString(js)
 	if err != nil {
-		return fmt.Errorf("invalid JWT_SECRET: %w", err)
+		return JWTConfig{}, fmt.Errorf("invalid JWT_SECRET: %w", err)
 	}
 
-	JWT = JWTConfig{
-		SecretKey: string(jwtSecret),
-	}
-	return nil
+	return JWTConfig{
+		SecretKey: jwtSecret,
+	}, nil
 }
 
-func LoadDatabaseConfig() error {
+func LoadDatabaseConfig() (DatabaseConfig, error) {
 	portStr, err := getEnv("DB_PORT")
 	if err != nil {
-		return err
+		return DatabaseConfig{}, err
 	}
 
 	dbPort, err := strconv.Atoi(portStr)
 	if err != nil {
-		return fmt.Errorf("DB_PORT must be a valid number: %w", err)
+		return DatabaseConfig{}, fmt.Errorf("DB_PORT must be a valid number: %w", err)
 	}
 
 	host, err := getEnv("DB_HOST")
 	if err != nil {
-		return err
+		return DatabaseConfig{}, err
 	}
 
 	user, err := getEnv("DB_USER")
 	if err != nil {
-		return err
+		return DatabaseConfig{}, err
 	}
 
 	password, err := getEnv("DB_PASSWORD")
 	if err != nil {
-		return err
+		return DatabaseConfig{}, err
 	}
 
 	databaseName, err := getEnv("DB_NAME")
 	if err != nil {
-		return err
+		return DatabaseConfig{}, err
 	}
 
 	sslMode, err := getEnv("DB_SSLMODE")
 	if err != nil {
-		return err
+		return DatabaseConfig{}, err
 	}
 
-	Database = DatabaseConfig{
+	return DatabaseConfig{
 		Host:         host,
 		Port:         dbPort,
 		User:         user,
 		Password:     password,
 		DatabaseName: databaseName,
 		SSLMode:      sslMode,
-	}
-	return nil
+	}, nil
 }
 
 // Gets an environment variable or returns an error

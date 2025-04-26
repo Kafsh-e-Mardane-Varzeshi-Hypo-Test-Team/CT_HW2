@@ -1,10 +1,8 @@
 package pkg
 
 import (
-	"errors"
 	"time"
 
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/config"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -12,23 +10,19 @@ const (
 	SessionMaxAge = 24 * time.Hour
 )
 
-func GenerateToken(userId string) (string, error) {
+func GenerateToken(userId string, secretKey []byte) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userId": userId,
 		"exp":    time.Now().Add(SessionMaxAge).Unix(),
 	})
 
-	return token.SignedString(config.JWT.SecretKey)
+	return token.SignedString(secretKey)
 }
 
-func ValidateToken(tokenString string) (jwt.MapClaims, bool) {
+func ValidateToken(tokenString string, secretKey []byte) (jwt.MapClaims, bool) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// safety measure
-		if token.Method != jwt.SigningMethodHS256 {
-			return nil, errors.New("unexpected signing method")
-		}
-		return config.JWT.SecretKey, nil
-	})
+		return secretKey, nil
+	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
 
 	if err != nil {
 		return nil, false

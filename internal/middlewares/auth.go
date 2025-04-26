@@ -4,49 +4,60 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/models"
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/database/generated"
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/handlers"
 	jwt "github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/pkg"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func (m *Middleware) AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := c.Cookie("session_token")
 		if err != nil || token == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort()
+			handlers.ClearSessionCookie(c)
+			c.Next()
 			return
 		}
 
-		claims, valid := jwt.ValidateToken(token)
+		claims, valid := jwt.ValidateToken(token, m.Configs.JWT.SecretKey)
 		if !valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			handlers.ClearSessionCookie(c)
+			c.Redirect(http.StatusFound, "/login")
 			c.Abort()
 			return
 		}
 
 		userId := claims["userId"]
 		if userId == nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token does not contain userId"})
+			handlers.ClearSessionCookie(c)
+			c.Redirect(http.StatusFound, "/login")
 			c.Abort()
 			return
 		}
+
 		userIdInt, err := strconv.Atoi(userId.(string))
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			handlers.ClearSessionCookie(c)
+			c.Redirect(http.StatusFound, "/login")
 			c.Abort()
 			return
 		}
 
-		user, err := models.FindUserByID(userIdInt)
+		// TODO: session + refresh token, if refresh token is expired then query
+		user, err := m.Database.Queries.GetUserById(c, int32(userIdInt))
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			handlers.ClearSessionCookie(c)
+			c.Redirect(http.StatusUnauthorized, "/login")
 			c.Abort()
 			return
 		}
 
-		c.Set("user", user)
+		c.Set("User", gin.H{
+			"ID":       user.ID,
+			"Username": user.Username,
+			"IsAdmin":  user.Role == generated.UserRoleAdmin,
+		})
 
 		c.Next()
 	}
