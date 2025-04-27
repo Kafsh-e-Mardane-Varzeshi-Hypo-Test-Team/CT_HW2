@@ -44,20 +44,25 @@ func (s *Server) registerRoutes() {
 	r.POST("/signup", handler.SignupPost)
 	r.POST("/logout", handler.Logout)
 
-	r.GET("/profile/:username", handler.ProfilePage)
-	// r.POST("/demote-user")
-	// r.POST("/promote-user")
+	r.GET("/profile/:username", handler.ProfileGet)
+	r.POST("/demote-user", handler.DemoteUser)
+	r.POST("/promote-user", handler.PromoteUser)
+
 	r.GET("/problemset", handler.ProblemsetPage)
+
 	r.GET("/submit/:id", handler.SubmitPage)
 	r.GET("/submit", handler.SubmitPage)
 	// r.POST("/submit")
 	r.GET("/submissions", handler.SubmissionsPage)
+
 	r.GET("/addedproblems", handler.AddedProblemsPage)
 	// r.POST("/draft-problem")
 	// r.POST("/publish-problem")
+
 	r.GET("/problem/:id", handler.ProblemPage)
 	r.GET("/newproblem", handler.NewProblemPage)
 	// r.POST("/newproblem")
+
 	r.GET("/editproblem/:id", handler.EditProblemPage)
 	// r.POST("/editproblem")
 }

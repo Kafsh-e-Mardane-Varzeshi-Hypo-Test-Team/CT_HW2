@@ -31,7 +31,8 @@ type Querier interface {
 	ListPublishedProblems(ctx context.Context, arg ListPublishedProblemsParams) ([]Problem, error)
 	ListTestCases(ctx context.Context, problemID pgtype.Int4) ([]TestCase, error)
 	ListUserProblems(ctx context.Context, ownerID int32) ([]Problem, error)
-	ListUserSubmissions(ctx context.Context, userID pgtype.Int4) ([]Submission, error)
+	// TODO: May be better to add problem name as a column to avoid join
+	ListUserSubmissions(ctx context.Context, arg ListUserSubmissionsParams) ([]ListUserSubmissionsRow, error)
 	ListUsers(ctx context.Context) ([]User, error)
 	UpdateProblem(ctx context.Context, arg UpdateProblemParams) (Problem, error)
 	UpdateSubmissionStatusTimeMemory(ctx context.Context, arg UpdateSubmissionStatusTimeMemoryParams) (Submission, error)

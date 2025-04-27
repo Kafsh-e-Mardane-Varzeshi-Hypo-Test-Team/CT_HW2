@@ -7,10 +7,13 @@ SELECT * FROM submissions
 WHERE problem_id = $1
 ORDER BY submitted_at DESC;
 
+-- TODO: May be better to add problem name as a column to avoid join
 -- name: ListUserSubmissions :many
-SELECT * FROM submissions
-WHERE user_id = $1
-ORDER BY submitted_at DESC;
+SELECT * FROM submissions AS s
+JOIN problems AS p ON p.id = s.problem_id
+WHERE s.user_id = $1
+ORDER BY s.submitted_at DESC
+LIMIT $2 OFFSET $3;
 
 -- name: CreateSubmission :one
 INSERT INTO submissions (

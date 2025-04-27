@@ -31,6 +31,15 @@ type Submission struct {
 	Memory  int
 }
 
+type Profile struct {
+	ID                    int32
+	Username              string
+	IsAdmin               bool
+	TotalSubmissions      int
+	SuccessfulSubmissions int
+	Submissions           []Submission
+}
+
 func NewHandler(service *services.Service) *Handler {
 	return &Handler{
 		Service: service,

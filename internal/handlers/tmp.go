@@ -179,17 +179,3 @@ func (h *Handler) SubmitPage(c *gin.Context) {
 		"ID": problemID,
 	})
 }
-
-func (h *Handler) ProfilePage(c *gin.Context) {
-	profileUsername := c.Param("username")
-	c.HTML(http.StatusOK, "profile.html", gin.H{
-		"User": admin,
-		"Profile": gin.H{
-			"Username":              profileUsername,
-			"IsAdmin":               false,
-			"TotalSubmissions":      37,
-			"SuccessfulSubmissions": 24,
-			"Submissions":           submissions,
-		},
-	})
-}
