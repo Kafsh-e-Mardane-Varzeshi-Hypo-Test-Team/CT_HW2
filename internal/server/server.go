@@ -38,13 +38,13 @@ func (s *Server) registerRoutes() {
 
 	r.GET("/", handler.IndexPage)
 
-	r.GET("/login", handler.LoginGet)
+	r.GET("/login", handler.LoginPage)
 	r.POST("/login", handler.LoginPost)
-	r.GET("/signup", handler.SignupGet)
+	r.GET("/signup", handler.SignupPage)
 	r.POST("/signup", handler.SignupPost)
 	r.POST("/logout", handler.Logout)
 
-	r.GET("/profile/:username", handler.ProfileGet)
+	r.GET("/profile/:username", handler.ProfilePage)
 	r.POST("/demote-user", handler.DemoteUser)
 	r.POST("/promote-user", handler.PromoteUser)
 

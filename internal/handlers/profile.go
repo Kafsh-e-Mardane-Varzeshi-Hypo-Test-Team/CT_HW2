@@ -13,7 +13,7 @@ const (
 	recentSubmissionsLimit = 5
 )
 
-func (h *Handler) ProfileGet(c *gin.Context) {
+func (h *Handler) ProfilePage(c *gin.Context) {
 	user, exists := c.Get("User")
 
 	if !exists {

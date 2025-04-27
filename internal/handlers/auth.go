@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) SignupGet(c *gin.Context) {
+func (h *Handler) SignupPage(c *gin.Context) {
 	_, exists := c.Get("User")
 
 	if !exists {
@@ -22,7 +22,7 @@ func (h *Handler) SignupGet(c *gin.Context) {
 	}
 }
 
-func (h *Handler) LoginGet(c *gin.Context) {
+func (h *Handler) LoginPage(c *gin.Context) {
 	_, exists := c.Get("User")
 
 	if !exists {
