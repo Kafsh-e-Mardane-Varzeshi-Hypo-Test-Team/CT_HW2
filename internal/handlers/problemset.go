@@ -14,15 +14,19 @@ const (
 )
 
 func (h *Handler) ProblemsetPage(c *gin.Context) {
+	data := gin.H{}
+
+	if user, exists := c.Get("User"); exists {
+		data["User"] = user
+	}
+
 	currentPage, err := strconv.Atoi(c.Query("page"))
 	if err != nil {
 		c.Redirect(http.StatusFound, "/problemset?page=1")
 		return
 	}
 
-	data := gin.H{}
-
-	problemCnt, err := h.Service.Database.Queries.GetPublishedProblemCount(c.Request.Context())
+	problemCnt, err := h.Service.Database.Queries.GetPublishedProblemsCount(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to fetch problem count",
@@ -63,7 +67,7 @@ func (h *Handler) ProblemsetPage(c *gin.Context) {
 			ID:            problem.ID,
 			Title:         problem.Title,
 			Owner:         string(problem.OwnerID),
-			Status:        string(problem.Status),
+			Status:        toTitle(string(problem.Status)),
 			TimeLimitMs:   problem.TimeLimitMs,
 			MemoryLimitMb: problem.MemoryLimitMb,
 			Statement:     problem.Statement,
@@ -73,10 +77,6 @@ func (h *Handler) ProblemsetPage(c *gin.Context) {
 	data["Problems"] = problemList
 	data["CurrentPage"] = currentPage
 	data["TotalPages"] = totalPages
-
-	if user, exists := c.Get("User"); exists {
-		data["User"] = user
-	}
 
 	c.HTML(http.StatusOK, "problemset.html", data)
 }

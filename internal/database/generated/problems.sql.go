@@ -95,17 +95,85 @@ func (q *Queries) GetProblemById(ctx context.Context, id int32) (Problem, error)
 	return i, err
 }
 
-const getPublishedProblemCount = `-- name: GetPublishedProblemCount :one
+const getProblemsCount = `-- name: GetProblemsCount :one
+SELECT COUNT(*) FROM problems
+`
+
+// TODO: optimize this query
+func (q *Queries) GetProblemsCount(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, getProblemsCount)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const getPublishedProblemsCount = `-- name: GetPublishedProblemsCount :one
 SELECT COUNT(*) FROM problems
 WHERE status = 'published'
 `
 
 // TODO: optimize this query
-func (q *Queries) GetPublishedProblemCount(ctx context.Context) (int64, error) {
-	row := q.db.QueryRow(ctx, getPublishedProblemCount)
+func (q *Queries) GetPublishedProblemsCount(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, getPublishedProblemsCount)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const getUserProblemsCount = `-- name: GetUserProblemsCount :one
+SELECT COUNT(*) FROM problems
+WHERE owner_id = $1
+`
+
+// TODO: optimize this query
+func (q *Queries) GetUserProblemsCount(ctx context.Context, ownerID int32) (int64, error) {
+	row := q.db.QueryRow(ctx, getUserProblemsCount, ownerID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const listProblems = `-- name: ListProblems :many
+SELECT id, title, statement, time_limit_ms, memory_limit_mb, sample_input, sample_output, owner_id, status, created_at, modified_at FROM problems
+ORDER BY id
+LIMIT $1 OFFSET $2
+`
+
+type ListProblemsParams struct {
+	Limit  int32 `db:"limit" json:"limit"`
+	Offset int32 `db:"offset" json:"offset"`
+}
+
+func (q *Queries) ListProblems(ctx context.Context, arg ListProblemsParams) ([]Problem, error) {
+	rows, err := q.db.Query(ctx, listProblems, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Problem
+	for rows.Next() {
+		var i Problem
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Statement,
+			&i.TimeLimitMs,
+			&i.MemoryLimitMb,
+			&i.SampleInput,
+			&i.SampleOutput,
+			&i.OwnerID,
+			&i.Status,
+			&i.CreatedAt,
+			&i.ModifiedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listPublishedProblems = `-- name: ListPublishedProblems :many
@@ -156,10 +224,17 @@ const listUserProblems = `-- name: ListUserProblems :many
 SELECT id, title, statement, time_limit_ms, memory_limit_mb, sample_input, sample_output, owner_id, status, created_at, modified_at FROM problems
 WHERE owner_id = $1
 ORDER BY id
+LIMIT $2 OFFSET $3
 `
 
-func (q *Queries) ListUserProblems(ctx context.Context, ownerID int32) ([]Problem, error) {
-	rows, err := q.db.Query(ctx, listUserProblems, ownerID)
+type ListUserProblemsParams struct {
+	OwnerID int32 `db:"owner_id" json:"owner_id"`
+	Limit   int32 `db:"limit" json:"limit"`
+	Offset  int32 `db:"offset" json:"offset"`
+}
+
+func (q *Queries) ListUserProblems(ctx context.Context, arg ListUserProblemsParams) ([]Problem, error) {
+	rows, err := q.db.Query(ctx, listUserProblems, arg.OwnerID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}

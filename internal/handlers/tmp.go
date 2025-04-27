@@ -146,20 +146,6 @@ func (h *Handler) ProblemPage(c *gin.Context) {
 	})
 }
 
-func (h *Handler) AddedProblemsPage(c *gin.Context) {
-	currentPage, err := strconv.Atoi(c.Query("page"))
-	if err != nil {
-		c.Redirect(http.StatusFound, "/addedproblems?page=1")
-		return
-	}
-	c.HTML(http.StatusOK, "added_problems.html", gin.H{
-		"Problems":    problems,
-		"CurrentPage": currentPage,
-		"TotalPages":  3,
-		"User":        admin,
-	})
-}
-
 func (h *Handler) SubmissionsPage(c *gin.Context) {
 	currentPage, err := strconv.Atoi(c.Query("page"))
 	if err != nil {

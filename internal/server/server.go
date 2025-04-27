@@ -50,14 +50,9 @@ func (s *Server) registerRoutes() {
 
 	r.GET("/problemset", handler.ProblemsetPage)
 
-	r.GET("/submit/:id", handler.SubmitPage)
-	r.GET("/submit", handler.SubmitPage)
-	// r.POST("/submit")
-	r.GET("/submissions", handler.SubmissionsPage)
-
 	r.GET("/addedproblems", handler.AddedProblemsPage)
-	// r.POST("/draft-problem")
-	// r.POST("/publish-problem")
+	r.POST("/draft-problem", handler.DraftProblem)
+	r.POST("/publish-problem", handler.PublishProblem)
 
 	r.GET("/problem/:id", handler.ProblemPage)
 	r.GET("/newproblem", handler.NewProblemPage)
@@ -65,4 +60,9 @@ func (s *Server) registerRoutes() {
 
 	r.GET("/editproblem/:id", handler.EditProblemPage)
 	// r.POST("/editproblem")
+
+	r.GET("/submit/:id", handler.SubmitPage)
+	r.GET("/submit", handler.SubmitPage)
+	// r.POST("/submit")
+	r.GET("/submissions", handler.SubmissionsPage)
 }

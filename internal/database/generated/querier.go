@@ -20,17 +20,22 @@ type Querier interface {
 	DeleteUser(ctx context.Context, id int32) error
 	GetProblemById(ctx context.Context, id int32) (Problem, error)
 	// TODO: optimize this query
-	GetPublishedProblemCount(ctx context.Context) (int64, error)
+	GetProblemsCount(ctx context.Context) (int64, error)
+	// TODO: optimize this query
+	GetPublishedProblemsCount(ctx context.Context) (int64, error)
 	GetSubmissionById(ctx context.Context, id int32) (Submission, error)
 	GetTestCaseById(ctx context.Context, id int32) (TestCase, error)
 	GetUserById(ctx context.Context, id int32) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
+	// TODO: optimize this query
+	GetUserProblemsCount(ctx context.Context, ownerID int32) (int64, error)
 	GetUserRankingById(ctx context.Context, limit int32) ([]GetUserRankingByIdRow, error)
 	GetUserStatsById(ctx context.Context, userID int32) (GetUserStatsByIdRow, error)
 	ListProblemSubmissions(ctx context.Context, problemID pgtype.Int4) ([]Submission, error)
+	ListProblems(ctx context.Context, arg ListProblemsParams) ([]Problem, error)
 	ListPublishedProblems(ctx context.Context, arg ListPublishedProblemsParams) ([]Problem, error)
 	ListTestCases(ctx context.Context, problemID pgtype.Int4) ([]TestCase, error)
-	ListUserProblems(ctx context.Context, ownerID int32) ([]Problem, error)
+	ListUserProblems(ctx context.Context, arg ListUserProblemsParams) ([]Problem, error)
 	// TODO: May be better to add problem name as a column to avoid join
 	ListUserSubmissions(ctx context.Context, arg ListUserSubmissionsParams) ([]ListUserSubmissionsRow, error)
 	ListUsers(ctx context.Context) ([]User, error)

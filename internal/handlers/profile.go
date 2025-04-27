@@ -116,7 +116,7 @@ func (h *Handler) DemoteUser(c *gin.Context) {
 	}
 	defer tx.Rollback(c.Request.Context())
 
-	userToChange, err := h.Service.Database.Queries.WithTx(tx).GetUserById(c.Request.Context(), user["ID"].(int32))
+	userMakingChange, err := h.Service.Database.Queries.WithTx(tx).GetUserById(c.Request.Context(), user["ID"].(int32))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -125,7 +125,7 @@ func (h *Handler) DemoteUser(c *gin.Context) {
 		return
 	}
 
-	if userToChange.Role != generated.UserRoleAdmin {
+	if userMakingChange.Role != generated.UserRoleAdmin {
 		c.JSON(http.StatusForbidden, gin.H{
 			"error": "You do not have permission to perform this action",
 		})
@@ -141,8 +141,8 @@ func (h *Handler) DemoteUser(c *gin.Context) {
 		return
 	}
 
-	if user_id == int(userToChange.ID) {
-		c.Redirect(http.StatusFound, "/profile/"+userToChange.Username)
+	if user_id == int(userMakingChange.ID) {
+		c.Redirect(http.StatusFound, "/profile/"+userMakingChange.Username)
 		return
 	}
 
@@ -210,7 +210,7 @@ func (h *Handler) PromoteUser(c *gin.Context) {
 	}
 	defer tx.Rollback(c.Request.Context())
 
-	userToChange, err := h.Service.Database.Queries.WithTx(tx).GetUserById(c.Request.Context(), user["ID"].(int32))
+	userMakingChange, err := h.Service.Database.Queries.WithTx(tx).GetUserById(c.Request.Context(), user["ID"].(int32))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -219,7 +219,7 @@ func (h *Handler) PromoteUser(c *gin.Context) {
 		return
 	}
 
-	if userToChange.Role != generated.UserRoleAdmin {
+	if userMakingChange.Role != generated.UserRoleAdmin {
 		c.JSON(http.StatusForbidden, gin.H{
 			"error": "You do not have permission to perform this action",
 		})
@@ -235,8 +235,8 @@ func (h *Handler) PromoteUser(c *gin.Context) {
 		return
 	}
 
-	if user_id == int(userToChange.ID) {
-		c.Redirect(http.StatusFound, "/profile/"+userToChange.Username)
+	if user_id == int(userMakingChange.ID) {
+		c.Redirect(http.StatusFound, "/profile/"+userMakingChange.Username)
 		return
 	}
 

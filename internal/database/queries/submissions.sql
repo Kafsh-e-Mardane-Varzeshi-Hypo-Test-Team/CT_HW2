@@ -7,7 +7,7 @@ SELECT * FROM submissions
 WHERE problem_id = $1
 ORDER BY submitted_at DESC;
 
--- TODO: May be better to add problem name as a column to avoid join
+-- FIXME: just don't join. query each instead (these are few in each page)
 -- name: ListUserSubmissions :many
 SELECT * FROM submissions AS s
 JOIN problems AS p ON p.id = s.problem_id

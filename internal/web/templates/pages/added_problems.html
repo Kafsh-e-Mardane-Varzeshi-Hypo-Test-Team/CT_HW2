@@ -46,17 +46,22 @@
                     </td>
                     <td class="actions-cell">
                         <div class="actions-group">
-                            <a href="/editproblem/{{.ID}}" class="btn btn-edit">Edit</a>
-                            {{ if eq .Status "Published" }}
-                                <form action="/draft-problem" method="POST">
-                                    <input type="hidden" name="problem_id" value="{{.ID}}">
-                                    <button type="submit" class="btn">Draft</button>
-                                </form>
-                            {{ else }}
-                                <form action="/publish-problem" method="POST">
-                                    <input type="hidden" name="problem_id" value="{{.ID}}">
-                                    <button type="submit" class="btn">Publish</button>
-                                </form>
+                            {{ if eq .Owner $.User.Username }}
+                                <a href="/editproblem/{{.ID}}" class="btn btn-edit">Edit</a>
+                            {{ end }}
+
+                            {{ if $.User.IsAdmin }}
+                                {{ if eq .Status "Published" }}
+                                    <form action="/draft-problem" method="POST">
+                                        <input type="hidden" name="problem_id" value="{{.ID}}">
+                                        <button type="submit" class="btn">Draft</button>
+                                    </form>
+                                {{ else }}
+                                    <form action="/publish-problem" method="POST">
+                                        <input type="hidden" name="problem_id" value="{{.ID}}">
+                                        <button type="submit" class="btn">Publish</button>
+                                    </form>
+                                {{ end }}
                             {{ end }}
                         </div>
                     </td>
