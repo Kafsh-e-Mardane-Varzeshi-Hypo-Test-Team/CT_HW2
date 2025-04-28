@@ -23,7 +23,7 @@ const (
 	concurrencyAddProblem     = 100
 )
 
-func main() {
+func AddProblemLoadTest() {
 	rand.Seed(time.Now().UnixNano())
 
 	var wg sync.WaitGroup
