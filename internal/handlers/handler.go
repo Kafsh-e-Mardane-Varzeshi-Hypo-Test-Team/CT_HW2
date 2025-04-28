@@ -7,28 +7,39 @@ type Handler struct {
 }
 
 type User struct {
-	ID       int
+	ID       int32
 	Username string
 	IsAdmin  bool
 }
 
 type Problem struct {
-	ID          int
+	ID          int32
 	Title       string
 	Owner       string
 	Status      string
-	TimeLimit   int
-	MemoryLimit int
+	TimeLimit   int32
+	MemoryLimit int32
 	Statement   string
+	Input       string
+	Output      string
 }
 
 type Submission struct {
-	ID      int
+	ID      int32
 	When    string
 	Problem Problem
 	Status  string
 	Time    int
 	Memory  int
+}
+
+type Profile struct {
+	ID                    int32
+	Username              string
+	IsAdmin               bool
+	TotalSubmissions      int
+	SuccessfulSubmissions int
+	Submissions           []Submission
 }
 
 func NewHandler(service *services.Service) *Handler {

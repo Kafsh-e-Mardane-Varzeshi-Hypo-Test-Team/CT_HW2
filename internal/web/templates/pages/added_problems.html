@@ -47,16 +47,19 @@
                     <td class="actions-cell">
                         <div class="actions-group">
                             <a href="/editproblem/{{.ID}}" class="btn btn-edit">Edit</a>
-                            {{ if eq .Status "Published" }}
-                                <form action="/draft-problem" method="POST">
-                                    <input type="hidden" name="problem_id" value="{{.ID}}">
-                                    <button type="submit" class="btn">Draft</button>
-                                </form>
-                            {{ else }}
-                                <form action="/publish-problem" method="POST">
-                                    <input type="hidden" name="problem_id" value="{{.ID}}">
-                                    <button type="submit" class="btn">Publish</button>
-                                </form>
+
+                            {{ if $.User.IsAdmin }}
+                                {{ if eq .Status "Published" }}
+                                    <form action="/draft-problem" method="POST">
+                                        <input type="hidden" name="problem_id" value="{{.ID}}">
+                                        <button type="submit" class="btn">Draft</button>
+                                    </form>
+                                {{ else }}
+                                    <form action="/publish-problem" method="POST">
+                                        <input type="hidden" name="problem_id" value="{{.ID}}">
+                                        <button type="submit" class="btn">Publish</button>
+                                    </form>
+                                {{ end }}
                             {{ end }}
                         </div>
                     </td>
@@ -73,15 +76,23 @@
     </div>
 
     <div class="pagination">
+        <a {{ if gt .CurrentPage 1 }} href="/addedproblems?page={{ sub .CurrentPage 1 }}" {{ end }} class="pagination-link">Previous</a>
         {{ if gt .CurrentPage 1 }}
-            <a href="/addedproblems?page={{ sub .CurrentPage 1 }}" class="pagination-link">Previous</a>
+            <a href="/addedproblems?page=1" class="pagination-link">1</a>
+            {{ if gt .CurrentPage 2 }}
+                <a class="pagination-link">...</a>
+            {{ end }}
         {{ end }}
 
         <span class="pagination-current">{{.CurrentPage}}</span>
 
         {{ if lt .CurrentPage .TotalPages }}
-            <a href="/addedproblems?page={{ add .CurrentPage 1 }}" class="pagination-link">Next</a>
+            {{ if lt (add .CurrentPage 1) .TotalPages }}
+                <a class="pagination-link">...</a>
+            {{ end }}
+            <a href="/addedproblems?page={{.TotalPages}}" class="pagination-link">{{.TotalPages}}</a>
         {{ end }}
+        <a {{ if lt .CurrentPage .TotalPages }} href="/addedproblems?page={{ add .CurrentPage 1 }}" {{ end }} class="pagination-link">Next</a>
     </div>
 </div>
 {{ end }}

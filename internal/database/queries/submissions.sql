@@ -10,7 +10,12 @@ ORDER BY submitted_at DESC;
 -- name: ListUserSubmissions :many
 SELECT * FROM submissions
 WHERE user_id = $1
-ORDER BY submitted_at DESC;
+ORDER BY submitted_at DESC
+LIMIT $2 OFFSET $3;
+
+-- name: GetUserSubmissionsCount :one
+SELECT COUNT(*) FROM submissions
+WHERE user_id = $1;
 
 -- name: CreateSubmission :one
 INSERT INTO submissions (

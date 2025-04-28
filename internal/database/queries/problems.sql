@@ -2,15 +2,36 @@
 SELECT * FROM problems
 WHERE id = $1;
 
--- name: ListPublishedProblems :many
+-- name: ListProblems :many
 SELECT * FROM problems
-WHERE status = 'published'
-ORDER BY id;
+ORDER BY id
+LIMIT $1 OFFSET $2;
+
+-- TODO: optimize this query
+-- name: GetProblemsCount :one
+SELECT COUNT(*) FROM problems;
 
 -- name: ListUserProblems :many
 SELECT * FROM problems
 WHERE owner_id = $1
-ORDER BY id;
+ORDER BY id
+LIMIT $2 OFFSET $3;
+
+-- TODO: optimize this query
+-- name: GetUserProblemsCount :one
+SELECT COUNT(*) FROM problems
+WHERE owner_id = $1;
+
+-- name: ListPublishedProblems :many
+SELECT * FROM problems
+WHERE status = 'published'
+ORDER BY id
+LIMIT $1 OFFSET $2;
+
+-- TODO: optimize this query
+-- name: GetPublishedProblemsCount :one
+SELECT COUNT(*) FROM problems
+WHERE status = 'published';
 
 -- name: CreateProblem :one
 INSERT INTO problems (

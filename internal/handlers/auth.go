@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) SignupGet(c *gin.Context) {
+func (h *Handler) SignupPage(c *gin.Context) {
 	_, exists := c.Get("User")
 
 	if !exists {
@@ -17,11 +17,12 @@ func (h *Handler) SignupGet(c *gin.Context) {
 	} else {
 		// TODO: code must be 302 for get, and 303 for post
 		c.Redirect(http.StatusSeeOther, "/")
+		c.Abort()
 		return
 	}
 }
 
-func (h *Handler) LoginGet(c *gin.Context) {
+func (h *Handler) LoginPage(c *gin.Context) {
 	_, exists := c.Get("User")
 
 	if !exists {
@@ -68,7 +69,8 @@ func (h *Handler) SignupPost(c *gin.Context) {
 	// cookie yum yum
 	c.SetCookie("session_token", token, int(jwt.SessionMaxAge.Seconds()), "/", "", true, true)
 
-	c.Redirect(http.StatusCreated, "/")
+	c.Redirect(http.StatusFound, "/")
+	c.Abort()
 }
 
 func (h *Handler) LoginPost(c *gin.Context) {
@@ -89,6 +91,8 @@ func (h *Handler) LoginPost(c *gin.Context) {
 	c.SetCookie("session_token", token, int(jwt.SessionMaxAge.Seconds()), "/", "", true, true)
 
 	c.Redirect(http.StatusFound, "/")
+
+	c.Abort()
 }
 
 func (h *Handler) Logout(c *gin.Context) {
@@ -105,6 +109,8 @@ func (h *Handler) Logout(c *gin.Context) {
 	ClearSessionCookie(c)
 
 	c.Redirect(http.StatusFound, "/")
+
+	c.Abort()
 }
 
 func ClearSessionCookie(c *gin.Context) {

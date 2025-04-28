@@ -14,7 +14,7 @@
                 </span>
                 {{ if .User.IsAdmin }}
                     <form action="/{{ if .Profile.IsAdmin }}demote{{ else }}promote{{ end }}-user" method="POST" class="role-form">
-                        <input type="hidden" name="user_id" value="{{ .Profile.Username }}">
+                        <input type="hidden" name="user_id" value="{{ .Profile.ID }}">
                         <button type="submit" class="btn">
                             {{ if .Profile.IsAdmin }}Remove Admin{{ else }}Make Admin{{ end }}
                         </button>

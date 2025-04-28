@@ -7,14 +7,11 @@ import (
 )
 
 func (h *Handler) IndexPage(c *gin.Context) {
-	user, exists := c.Get("User")
+	data := gin.H{}
 
-	if !exists {
-		c.HTML(http.StatusOK, "index.html", nil)
-	} else {
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"User": user,
-		})
-		return
+	if user, exists := c.Get("User"); exists {
+		data["User"] = user
 	}
+
+	c.HTML(http.StatusOK, "index.html", data)
 }

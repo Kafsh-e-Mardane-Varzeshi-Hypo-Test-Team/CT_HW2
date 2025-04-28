@@ -38,26 +38,31 @@ func (s *Server) registerRoutes() {
 
 	r.GET("/", handler.IndexPage)
 
-	r.GET("/login", handler.LoginGet)
+	r.GET("/login", handler.LoginPage)
 	r.POST("/login", handler.LoginPost)
-	r.GET("/signup", handler.SignupGet)
+	r.GET("/signup", handler.SignupPage)
 	r.POST("/signup", handler.SignupPost)
 	r.POST("/logout", handler.Logout)
 
 	r.GET("/profile/:username", handler.ProfilePage)
-	// r.POST("/demote-user")
-	// r.POST("/promote-user")
+	r.POST("/demote-user", handler.DemoteUser)
+	r.POST("/promote-user", handler.PromoteUser)
+
 	r.GET("/problemset", handler.ProblemsetPage)
-	r.GET("/submit/:id", handler.SubmitPage)
-	r.GET("/submit", handler.SubmitPage)
-	// r.POST("/submit")
-	r.GET("/submissions", handler.SubmissionsPage)
+
 	r.GET("/addedproblems", handler.AddedProblemsPage)
-	// r.POST("/draft-problem")
-	// r.POST("/publish-problem")
+	r.POST("/draft-problem", handler.DraftProblem)
+	r.POST("/publish-problem", handler.PublishProblem)
+
 	r.GET("/problem/:id", handler.ProblemPage)
 	r.GET("/newproblem", handler.NewProblemPage)
-	// r.POST("/newproblem")
+	r.POST("/newproblem", handler.NewProblemPost)
+
 	r.GET("/editproblem/:id", handler.EditProblemPage)
-	// r.POST("/editproblem")
+	r.POST("/editproblem", handler.EditProblemPost)
+
+	r.GET("/submit", handler.SubmitPage)
+	r.GET("/submit/:id", handler.SubmitPage)
+	r.POST("/submit", handler.SubmitPost)
+	r.GET("/submissions", handler.SubmissionsPage)
 }
