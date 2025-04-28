@@ -56,13 +56,13 @@ func (h *Handler) ProfilePage(c *gin.Context) {
 	submissions := make([]Submission, 0, len(recentSubmissions))
 	for _, submission := range recentSubmissions {
 		problem := Problem{
-			ID:            submission.ProblemID.Int32,
-			Title:         submission.Title,
-			Owner:         strconv.Itoa(int(submission.OwnerID)),
-			Status:        string(submission.Status_2),
-			TimeLimitMs:   submission.TimeLimitMs,
-			MemoryLimitMb: submission.MemoryLimitMb,
-			Statement:     submission.Statement,
+			ID:          submission.ProblemID.Int32,
+			Title:       submission.Title,
+			Owner:       strconv.Itoa(int(submission.OwnerID)),
+			Status:      string(submission.Status_2),
+			TimeLimit:   submission.TimeLimitMs,
+			MemoryLimit: submission.MemoryLimitMb,
+			Statement:   submission.Statement,
 		}
 
 		submissions = append(submissions, Submission{

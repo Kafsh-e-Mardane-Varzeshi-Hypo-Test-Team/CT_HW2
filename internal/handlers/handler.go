@@ -13,13 +13,13 @@ type User struct {
 }
 
 type Problem struct {
-	ID            int32
-	Title         string
-	Owner         string
-	Status        string
-	TimeLimitMs   int32
-	MemoryLimitMb int32
-	Statement     string
+	ID          int32
+	Title       string
+	Owner       string
+	Status      string
+	TimeLimit   int32
+	MemoryLimit int32
+	Statement   string
 }
 
 type Submission struct {

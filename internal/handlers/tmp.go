@@ -121,31 +121,6 @@ Print two space-separated integers representing the indices of the two numbers.
 	}
 )
 
-func (h *Handler) EditProblemPage(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	c.HTML(http.StatusOK, "edit_problem.html", gin.H{
-		"Problem": problems[id-1],
-		"User":    admin,
-	})
-}
-
-func (h *Handler) NewProblemPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "new_problem.html", gin.H{
-		"User": admin,
-	})
-}
-
-func (h *Handler) ProblemPage(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	c.HTML(http.StatusOK, "problem.html", gin.H{
-		"Problem": problems[id-1],
-		"User": gin.H{
-			"Username": "mammedbrk",
-			"IsAdmin":  true,
-		},
-	})
-}
-
 func (h *Handler) SubmissionsPage(c *gin.Context) {
 	currentPage, err := strconv.Atoi(c.Query("page"))
 	if err != nil {

@@ -64,13 +64,13 @@ func (h *Handler) ProblemsetPage(c *gin.Context) {
 
 	for _, problem := range problems {
 		problemList = append(problemList, Problem{
-			ID:            problem.ID,
-			Title:         problem.Title,
-			Owner:         string(problem.OwnerID),
-			Status:        toTitle(string(problem.Status)),
-			TimeLimitMs:   problem.TimeLimitMs,
-			MemoryLimitMb: problem.MemoryLimitMb,
-			Statement:     problem.Statement,
+			ID:          problem.ID,
+			Title:       problem.Title,
+			Owner:       string(problem.OwnerID),
+			Status:      toTitle(string(problem.Status)),
+			TimeLimit:   problem.TimeLimitMs,
+			MemoryLimit: problem.MemoryLimitMb,
+			Statement:   problem.Statement,
 		})
 	}
 
