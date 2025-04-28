@@ -5,7 +5,7 @@ type ExecuteRequest struct {
 	Input          string `json:"input" binding:"required"`
 	ExpectedOutput string `json:"expected_output" binding:"required"`
 	MemoryLimit    int    `json:"memory_limit" binding:"required"`
-	TimeLimit      int    `json:"timeout" binding:"required"`
+	TimeLimit      int    `json:"time_limit" binding:"required"`
 }
 
 type ExecuteResponse struct {
