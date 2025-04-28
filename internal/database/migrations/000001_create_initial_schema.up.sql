@@ -73,16 +73,16 @@ BEGIN
     END IF;
 
     -- Handle status changes
-    IF (TG_OP = 'INSERT' AND NEW.status = 'OK') OR
-       (TG_OP = 'UPDATE' AND OLD.status != 'OK' AND NEW.status = 'OK') THEN
-        -- Increment total_accepted only if it's their first OK for this problem
+    IF (TG_OP = 'INSERT' AND NEW.status = 'Accepted') OR
+       (TG_OP = 'UPDATE' AND OLD.status != 'Accepted' AND NEW.status = 'Accepted') THEN
+        -- Increment total_accepted only if it's their first Accept for this problem
         UPDATE user_stats 
         SET total_accepted = CASE 
                 WHEN NOT EXISTS (
                     SELECT 1 FROM submissions 
                     WHERE user_id = NEW.user_id 
                     AND problem_id = NEW.problem_id 
-                    AND status = 'OK'
+                    AND status = 'Accepted'
                     AND id != NEW.id
                 ) THEN total_accepted + 1
                 ELSE total_accepted
