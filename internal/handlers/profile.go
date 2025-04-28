@@ -18,6 +18,7 @@ func (h *Handler) ProfilePage(c *gin.Context) {
 
 	if !exists {
 		c.Redirect(http.StatusFound, "/login")
+		c.Abort()
 		return
 	}
 
