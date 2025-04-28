@@ -46,9 +46,7 @@
                     </td>
                     <td class="actions-cell">
                         <div class="actions-group">
-                            {{ if eq .Owner $.User.Username }}
-                                <a href="/editproblem/{{.ID}}" class="btn btn-edit">Edit</a>
-                            {{ end }}
+                            <a href="/editproblem/{{.ID}}" class="btn btn-edit">Edit</a>
 
                             {{ if $.User.IsAdmin }}
                                 {{ if eq .Status "Published" }}
