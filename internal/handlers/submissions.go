@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"io"
 	"net/http"
 	"strconv"
 
@@ -135,4 +136,113 @@ func (h *Handler) SubmitPage(c *gin.Context) {
 }
 
 func (h *Handler) SubmitPost(c *gin.Context) {
+	data := gin.H{}
+	userCache, exists := c.Get("User")
+
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	user, ok := userCache.(gin.H)
+
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to fetch user",
+		})
+		return
+	}
+
+	data["User"] = user
+
+	problemID := c.PostForm("id")
+	language := c.PostForm("language")
+	method := c.PostForm("method")
+
+	if language == "" || problemID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Language and problem ID are required",
+		})
+		return
+	}
+
+	uploadedFile, err := c.FormFile("file")
+	if method == "file" && err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "File is required",
+		})
+		return
+	}
+
+	var code string
+	if method == "file" {
+		f, err := uploadedFile.Open()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to open uploaded file",
+			})
+			return
+		}
+		defer f.Close()
+
+		content, err := io.ReadAll(f)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to read uploaded file",
+			})
+			return
+		}
+
+		code = string(content)
+	} else {
+		code = c.PostForm("code")
+		if method == "code" && code == "" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "Code is required",
+			})
+			return
+		}
+	}
+
+	problemIDInt, err := strconv.Atoi(problemID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid problem ID",
+		})
+		return
+	}
+
+	problem, err := h.Service.Database.Queries.GetProblemById(c.Request.Context(), int32(problemIDInt))
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Problem not found",
+		})
+		return
+	}
+
+	if problem.Status != generated.ProblemStatusPublished {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Problem is not published",
+		})
+		return
+	}
+
+	_, err = h.Service.Database.Queries.CreateSubmission(c.Request.Context(), generated.CreateSubmissionParams{
+		UserID:     pgtype.Int4{Int32: user["ID"].(int32), Valid: true},
+		ProblemID:  pgtype.Int4{Int32: problem.ID, Valid: true},
+		SourceCode: code,
+		Status:     generated.SubmissionStatusPending,
+	})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to submit code",
+		})
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/submissions?page=1")
 }
