@@ -57,7 +57,8 @@ type SubmissionStatus string
 
 const (
 	SubmissionStatusPending      SubmissionStatus = "Pending"
-	SubmissionStatusOK           SubmissionStatus = "OK"
+	SubmissionStatusRunning      SubmissionStatus = "Running"
+	SubmissionStatusAccepted     SubmissionStatus = "Accepted"
 	SubmissionStatusCompileError SubmissionStatus = "Compile Error"
 	SubmissionStatusWrongAnswer  SubmissionStatus = "Wrong Answer"
 	SubmissionStatusMemoryLimit  SubmissionStatus = "Memory Limit"
