@@ -7,13 +7,15 @@ SELECT * FROM submissions
 WHERE problem_id = $1
 ORDER BY submitted_at DESC;
 
--- FIXME: just don't join. query each instead (these are few in each page)
 -- name: ListUserSubmissions :many
-SELECT * FROM submissions AS s
-JOIN problems AS p ON p.id = s.problem_id
-WHERE s.user_id = $1
-ORDER BY s.submitted_at DESC
+SELECT * FROM submissions
+WHERE user_id = $1
+ORDER BY submitted_at DESC
 LIMIT $2 OFFSET $3;
+
+-- name: GetUserSubmissionsCount :one
+SELECT COUNT(*) FROM submissions
+WHERE user_id = $1;
 
 -- name: CreateSubmission :one
 INSERT INTO submissions (

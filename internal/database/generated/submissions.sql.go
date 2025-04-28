@@ -69,6 +69,18 @@ func (q *Queries) GetSubmissionById(ctx context.Context, id int32) (Submission, 
 	return i, err
 }
 
+const getUserSubmissionsCount = `-- name: GetUserSubmissionsCount :one
+SELECT COUNT(*) FROM submissions
+WHERE user_id = $1
+`
+
+func (q *Queries) GetUserSubmissionsCount(ctx context.Context, userID pgtype.Int4) (int64, error) {
+	row := q.db.QueryRow(ctx, getUserSubmissionsCount, userID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const listProblemSubmissions = `-- name: ListProblemSubmissions :many
 SELECT id, user_id, problem_id, source_code, status, execution_time_ms, memory_used_mb, submitted_at FROM submissions
 WHERE problem_id = $1
@@ -105,10 +117,9 @@ func (q *Queries) ListProblemSubmissions(ctx context.Context, problemID pgtype.I
 }
 
 const listUserSubmissions = `-- name: ListUserSubmissions :many
-SELECT s.id, user_id, problem_id, source_code, s.status, execution_time_ms, memory_used_mb, submitted_at, p.id, title, statement, time_limit_ms, memory_limit_mb, sample_input, sample_output, owner_id, p.status, created_at, modified_at FROM submissions AS s
-JOIN problems AS p ON p.id = s.problem_id
-WHERE s.user_id = $1
-ORDER BY s.submitted_at DESC
+SELECT id, user_id, problem_id, source_code, status, execution_time_ms, memory_used_mb, submitted_at FROM submissions
+WHERE user_id = $1
+ORDER BY submitted_at DESC
 LIMIT $2 OFFSET $3
 `
 
@@ -118,38 +129,15 @@ type ListUserSubmissionsParams struct {
 	Offset int32       `db:"offset" json:"offset"`
 }
 
-type ListUserSubmissionsRow struct {
-	ID              int32              `db:"id" json:"id"`
-	UserID          pgtype.Int4        `db:"user_id" json:"user_id"`
-	ProblemID       pgtype.Int4        `db:"problem_id" json:"problem_id"`
-	SourceCode      string             `db:"source_code" json:"source_code"`
-	Status          SubmissionStatus   `db:"status" json:"status"`
-	ExecutionTimeMs pgtype.Int4        `db:"execution_time_ms" json:"execution_time_ms"`
-	MemoryUsedMb    pgtype.Int4        `db:"memory_used_mb" json:"memory_used_mb"`
-	SubmittedAt     pgtype.Timestamptz `db:"submitted_at" json:"submitted_at"`
-	ID_2            int32              `db:"id_2" json:"id_2"`
-	Title           string             `db:"title" json:"title"`
-	Statement       string             `db:"statement" json:"statement"`
-	TimeLimitMs     int32              `db:"time_limit_ms" json:"time_limit_ms"`
-	MemoryLimitMb   int32              `db:"memory_limit_mb" json:"memory_limit_mb"`
-	SampleInput     pgtype.Text        `db:"sample_input" json:"sample_input"`
-	SampleOutput    pgtype.Text        `db:"sample_output" json:"sample_output"`
-	OwnerID         int32              `db:"owner_id" json:"owner_id"`
-	Status_2        ProblemStatus      `db:"status_2" json:"status_2"`
-	CreatedAt       pgtype.Timestamptz `db:"created_at" json:"created_at"`
-	ModifiedAt      pgtype.Timestamptz `db:"modified_at" json:"modified_at"`
-}
-
-// TODO: May be better to add problem name as a column to avoid join
-func (q *Queries) ListUserSubmissions(ctx context.Context, arg ListUserSubmissionsParams) ([]ListUserSubmissionsRow, error) {
+func (q *Queries) ListUserSubmissions(ctx context.Context, arg ListUserSubmissionsParams) ([]Submission, error) {
 	rows, err := q.db.Query(ctx, listUserSubmissions, arg.UserID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListUserSubmissionsRow
+	var items []Submission
 	for rows.Next() {
-		var i ListUserSubmissionsRow
+		var i Submission
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
@@ -159,17 +147,6 @@ func (q *Queries) ListUserSubmissions(ctx context.Context, arg ListUserSubmissio
 			&i.ExecutionTimeMs,
 			&i.MemoryUsedMb,
 			&i.SubmittedAt,
-			&i.ID_2,
-			&i.Title,
-			&i.Statement,
-			&i.TimeLimitMs,
-			&i.MemoryLimitMb,
-			&i.SampleInput,
-			&i.SampleOutput,
-			&i.OwnerID,
-			&i.Status_2,
-			&i.CreatedAt,
-			&i.ModifiedAt,
 		); err != nil {
 			return nil, err
 		}

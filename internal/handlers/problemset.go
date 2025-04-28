@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -41,7 +40,6 @@ func (h *Handler) ProblemsetPage(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/problemset?page=1")
 		return
 	} else if int64(currentPage) > totalPages {
-		fmt.Println("currentPage", currentPage, "totalPages", totalPages, "problemCnt", problemCnt)
 		c.Redirect(http.StatusFound, "/problemset?page="+strconv.FormatInt(totalPages, 10))
 		return
 	}

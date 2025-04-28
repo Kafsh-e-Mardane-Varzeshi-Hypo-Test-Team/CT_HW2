@@ -56,23 +56,28 @@ func (h *Handler) ProfilePage(c *gin.Context) {
 
 	submissions := make([]Submission, 0, len(recentSubmissions))
 	for _, submission := range recentSubmissions {
-		problem := Problem{
-			ID:          submission.ProblemID.Int32,
-			Title:       submission.Title,
-			Owner:       strconv.Itoa(int(submission.OwnerID)),
-			Status:      string(submission.Status_2),
-			TimeLimit:   submission.TimeLimitMs,
-			MemoryLimit: submission.MemoryLimitMb,
-			Statement:   submission.Statement,
+		problem, err := h.Service.Database.Queries.GetProblemById(c.Request.Context(), submission.ProblemID.Int32)
+
+		if err != nil {
+			problem = generated.Problem{}
 		}
 
 		submissions = append(submissions, Submission{
-			ID:      submission.ID,
-			When:    submission.SubmittedAt.Time.String(),
-			Problem: problem,
-			Status:  string(submission.Status),
-			Time:    int(submission.ExecutionTimeMs.Int32),
-			Memory:  int(submission.MemoryUsedMb.Int32),
+			ID:   submission.ID,
+			When: submission.SubmittedAt.Time.String(),
+			Problem: Problem{
+				ID:          problem.ID,
+				Title:       problem.Title,
+				Status:      toTitle(string(problem.Status)),
+				TimeLimit:   problem.TimeLimitMs,
+				MemoryLimit: problem.MemoryLimitMb,
+				Statement:   problem.Statement,
+				Input:       problem.SampleInput.String,
+				Output:      problem.SampleOutput.String,
+			},
+			Status: string(submission.Status),
+			Time:   int(submission.ExecutionTimeMs.Int32),
+			Memory: int(submission.MemoryUsedMb.Int32),
 		})
 	}
 
