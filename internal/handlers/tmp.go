@@ -8,10 +8,6 @@ import (
 )
 
 var (
-	admin = gin.H{
-		"Username": "admin",
-		"IsAdmin":  true,
-	}
 	problems = []gin.H{
 		{
 			"ID":          1,

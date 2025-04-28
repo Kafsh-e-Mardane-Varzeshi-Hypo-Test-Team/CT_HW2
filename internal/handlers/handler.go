@@ -20,6 +20,8 @@ type Problem struct {
 	TimeLimit   int32
 	MemoryLimit int32
 	Statement   string
+	Input       string
+	Output      string
 }
 
 type Submission struct {
