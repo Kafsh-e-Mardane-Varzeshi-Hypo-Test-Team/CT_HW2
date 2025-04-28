@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/config"
+	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/judge"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/server"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/services"
 	"github.com/Kafsh-e-Mardane-Varzeshi-Hypo-Test-Team/CT_HW2/internal/web/renderer"
@@ -25,6 +26,8 @@ func main() {
 		log.Fatalf("DB init error: %v", err)
 	}
 	defer dbService.DB.Close()
+
+	go judge.StartCoordinator(ctx, dbService)
 
 	// Init Server
 	path := "internal/web/templates"
