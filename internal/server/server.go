@@ -61,8 +61,8 @@ func (s *Server) registerRoutes() {
 	r.GET("/editproblem/:id", handler.EditProblemPage)
 	r.POST("/editproblem", handler.EditProblemPost)
 
-	r.GET("/submit/:id", handler.SubmitPage)
 	r.GET("/submit", handler.SubmitPage)
-	// r.POST("/submit")
+	r.GET("/submit/:id", handler.SubmitPage)
+	r.POST("/submit", handler.SubmitPost)
 	r.GET("/submissions", handler.SubmissionsPage)
 }
