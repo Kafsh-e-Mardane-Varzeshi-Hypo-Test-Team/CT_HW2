@@ -30,6 +30,12 @@ CREATE TABLE problems (
 -- Add index on foreign key
 CREATE INDEX idx_problems_owner ON problems(owner_id);
 
+-- Add index on the created_at column for sorting or filtering by creating time
+CREATE INDEX idx_problems_created_at ON problems(created_at);
+
+-- Add index on the status column for filtering by submission status
+CREATE INDEX idx_problems_status ON problems(status);
+
 -- Test cases table
 CREATE TABLE test_cases (
     id SERIAL PRIMARY KEY,
@@ -52,6 +58,12 @@ CREATE TABLE submissions (
 
 -- Add index on foreign key
 CREATE INDEX idx_submissions_user ON submissions(user_id);
+
+-- Add index on the submitted_at column for sorting or filtering by submission time
+CREATE INDEX idx_submissions_submitted_at ON submissions(submitted_at);
+
+-- Add index on the status column for filtering by submission status
+CREATE INDEX idx_submissions_status ON submissions(status);
 
 -- User_stats table
 CREATE TABLE user_stats (
